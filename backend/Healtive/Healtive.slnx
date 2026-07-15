@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Healtive.API/Healtive.API.csproj" />
+  <Project Path="Healtive.Core/Healtive.Core.csproj" Id="5454c43e-48c5-40e7-b42c-3abad6e7f9c6" />
+  <Project Path="Healtive.Infrastructure/Healtive.Infrastructure.csproj" Id="53795b67-3eb3-4a0a-bd4c-4387c7750efe" />
+</Solution>
