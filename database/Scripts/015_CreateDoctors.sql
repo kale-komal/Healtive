@@ -10,7 +10,11 @@ CREATE TABLE Doctors
 
     HospitalId CHAR(36) NOT NULL,
 
-    UserId CHAR(36) NOT NULL,
+    DepartmentId CHAR(36) NULL,
+
+    UserId CHAR(36) NULL,
+
+    FullName VARCHAR(200) NOT NULL,
 
     DoctorCode VARCHAR(50) NOT NULL,
 
@@ -46,6 +50,10 @@ CREATE TABLE Doctors
     CONSTRAINT FK_Doctors_Hospitals
         FOREIGN KEY (HospitalId)
         REFERENCES Hospitals(Id),
+
+    CONSTRAINT FK_Doctors_Departments
+        FOREIGN KEY (DepartmentId)
+        REFERENCES Departments(Id),
 
     CONSTRAINT FK_Doctors_Users
         FOREIGN KEY (UserId)

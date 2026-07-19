@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="Enums\" />
-    <Folder Include="Common\" />
-    <Folder Include="Constants\" />
-    <Folder Include="Services\" />
+    <Compile Remove="Common\**" />
+    <Compile Remove="DTOs\**" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <EmbeddedResource Remove="DTOs\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Common\**" />
+    <None Remove="DTOs\**" />
+    <None Remove="Services\**" />
   </ItemGroup>
 
 </Project>
