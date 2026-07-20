@@ -22,6 +22,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+    <PackageReference Include="Dapper" Version="2.1.79" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.10" />
+    <PackageReference Include="MySqlConnector" Version="2.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Healtive.Application\Healtive.Application.csproj" />
     <ProjectReference Include="..\Healtive.Core\Healtive.Core.csproj" />
     <ProjectReference Include="..\Healtive.Shared\Healtive.Shared.csproj" />
