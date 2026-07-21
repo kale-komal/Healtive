@@ -1,31 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Healtive.Core.Entities;
 
-namespace Healtive.Core.Entities
+public class Hospital
 {
-    public class Hospital : BaseEntity
-    {
-        public string Name { get; set; } = string.Empty;
+    public Guid Id { get; set; }
 
-        public string Code { get; set; } = string.Empty;
+    public string HospitalCode { get; set; } = string.Empty;
 
-        public string Email { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
-        public string PhoneNumber { get; set; } = string.Empty;
+    public string? RegistrationNumber { get; set; }
 
-        public string Address { get; set; } = string.Empty;
+    public string? Email { get; set; }
 
-        public string City { get; set; } = string.Empty;
+    public string? MobileNumber { get; set; }
 
-        public string State { get; set; } = string.Empty;
+    public string? PhoneNumber { get; set; }
 
-        public string Country { get; set; } = string.Empty;
+    public string? AddressLine1 { get; set; }
 
-        public string Logo { get; set; } = string.Empty;
+    public string? AddressLine2 { get; set; }
 
-        public bool IsActive { get; set; } = true;
-    }
+    public string? City { get; set; }
+
+    public string? State { get; set; }
+
+    public string? Country { get; set; }
+
+    public string? PostalCode { get; set; }
+
+    public string? LogoUrl { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
+    public bool IsDeleted { get; set; }
 }

@@ -1,16 +1,18 @@
 ﻿namespace Healtive.Core.Entities;
 
-public class Branch : BaseEntity
+public class Branch
 {
+    public Guid Id { get; set; }
+
     public Guid HospitalId { get; set; }
 
     public string Name { get; set; } = string.Empty;
 
     public string Code { get; set; } = string.Empty;
 
-    public string PhoneNumber { get; set; } = string.Empty;
+    public string? Email { get; set; }
 
-    public string Email { get; set; } = string.Empty;
+    public string? PhoneNumber { get; set; }
 
     public string Address { get; set; } = string.Empty;
 
@@ -18,5 +20,17 @@ public class Branch : BaseEntity
 
     public string State { get; set; } = string.Empty;
 
-    public bool IsActive { get; set; } = true;
+    public string Country { get; set; } = string.Empty;
+
+    public string? PostalCode { get; set; }
+
+    public bool IsHeadOffice { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
+    public bool IsDeleted { get; set; }
 }
