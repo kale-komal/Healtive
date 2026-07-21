@@ -65,3 +65,11 @@ CREATE TABLE Doctors
     CONSTRAINT UQ_Doctors_Registration
         UNIQUE (RegistrationNumber)
 );
+
+
+-- update
+ALTER TABLE Doctors
+DROP FOREIGN KEY FK_Doctors_Departments;
+
+ALTER TABLE Doctors
+DROP COLUMN DepartmentId;
