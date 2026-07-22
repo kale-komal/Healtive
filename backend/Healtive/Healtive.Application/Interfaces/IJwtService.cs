@@ -8,5 +8,5 @@ public interface IJwtService
 
     string GenerateRefreshToken();
 
-    DateTime GetRefreshTokenExpiry();
+    DateTime GetAccessTokenExpiry();
 }

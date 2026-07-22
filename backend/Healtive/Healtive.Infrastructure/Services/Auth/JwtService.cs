@@ -75,9 +75,9 @@ public class JwtService : IJwtService
             RandomNumberGenerator.GetBytes(64));
     }
 
-    public DateTime GetRefreshTokenExpiry()
+    public DateTime GetAccessTokenExpiry()
     {
-        return DateTime.UtcNow.AddDays(
-            _jwtSettings.RefreshTokenDays);
+        return DateTime.UtcNow.AddMinutes(
+            _jwtSettings.AccessTokenMinutes);
     }
 }

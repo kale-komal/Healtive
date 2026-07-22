@@ -48,15 +48,15 @@ public class AuthService : IAuthService
 
         if (!isPasswordValid)
         {
-            var loginHistory = new UserLoginHistory
+            var successLoginHistory = new UserLoginHistory
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 LoginTime = DateTime.UtcNow,
-                IsSuccessful = false
+                IsSuccessful = true
             };
 
-            await _authRepository.AddLoginHistoryAsync(loginHistory);
+            await _authRepository.AddLoginHistoryAsync(successLoginHistory);
 
             return ApiResponse<LoginResponse>.FailureResponse(
     "Invalid username/email or password.");
@@ -76,7 +76,55 @@ public class AuthService : IAuthService
             user,
             roles);
 
-        throw new NotImplementedException();
+        // Step 5 - Generate Refresh Token
+        var refreshToken = _jwtService.GenerateRefreshToken();
+
+        var refreshTokenEntity = new UserRefreshToken
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            RefreshToken = refreshToken,
+            ExpiresAt = _jwtService.GetAccessTokenExpiry(),
+            IsRevoked = false,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _authRepository.SaveRefreshTokenAsync(refreshTokenEntity);
+
+        // Step 6 - Update Last Login
+        await _userRepository.UpdateLastLoginAsync(user.Id);
+
+        // Step 7 - Save Successful Login History
+        var loginHistory = new UserLoginHistory
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            LoginTime = DateTime.UtcNow,
+            IsSuccessful = true
+        };
+
+        await _authRepository.AddLoginHistoryAsync(loginHistory);
+
+        // Step 8 - Build Response
+        var response = new LoginResponse
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(120), // We'll improve this next
+            User = new CurrentUserDto
+            {
+                UserId = user.Id,
+                HospitalId = user.HospitalId,
+                BranchId = user.BranchId,
+                Username = user.Username,
+                FullName = $"{user.FirstName} {user.LastName}",
+                Role = roles.First()
+            }
+        };
+
+        return ApiResponse<LoginResponse>.SuccessResponse(
+            response,
+            "Login successful.");
     }
     public Task LogoutAsync(string refreshToken)
     {
