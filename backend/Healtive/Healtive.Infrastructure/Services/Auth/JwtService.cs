@@ -62,7 +62,7 @@ public class JwtService : IJwtService
             audience: _jwtSettings.Audience,
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(
-                _jwtSettings.AccessTokenMinutes),
+                _jwtSettings.ExpireMinutes),
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler()
@@ -78,6 +78,6 @@ public class JwtService : IJwtService
     public DateTime GetAccessTokenExpiry()
     {
         return DateTime.UtcNow.AddMinutes(
-            _jwtSettings.AccessTokenMinutes);
+            _jwtSettings.ExpireMinutes);
     }
 }

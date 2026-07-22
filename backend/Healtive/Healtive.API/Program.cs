@@ -1,7 +1,8 @@
-using Healtive.API.Configuration;
+using Healtive.Infrastructure.Configuration;
 using Healtive.Application.Interfaces;
 using Healtive.Infrastructure.Data;
 using Healtive.Infrastructure.Repositories.Auth;
+using Healtive.Infrastructure.Seed;
 using Healtive.Infrastructure.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -42,6 +43,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
@@ -52,6 +55,14 @@ builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider
+        .GetRequiredService<IDatabaseSeeder>();
+
+    await seeder.SeedAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

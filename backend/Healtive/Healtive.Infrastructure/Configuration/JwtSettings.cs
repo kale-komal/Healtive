@@ -8,7 +8,7 @@ public class JwtSettings
 
     public string Audience { get; set; } = string.Empty;
 
-    public int AccessTokenMinutes { get; set; }
+    public int ExpireMinutes { get; set; }
 
-    public int RefreshTokenDays { get; set; }
+    public int RefreshTokenExpireDays { get; set; }
 }
