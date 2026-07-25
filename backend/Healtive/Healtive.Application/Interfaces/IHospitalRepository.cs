@@ -30,4 +30,9 @@ public interface IHospitalRepository
     Task<bool> ExistsByCodeAsync(Guid id, string code);
     Task<bool> ExistsByEmailAsync(Guid id, string email);
     Task<bool> ExistsByMobileAsync(Guid id, string phoneNumber);
+
+
+    Task ActivateAsync(Guid id);
+
+    Task DeactivateAsync(Guid id);
 }

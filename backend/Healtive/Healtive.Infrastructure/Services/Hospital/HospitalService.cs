@@ -150,9 +150,21 @@ public class HospitalService : IHospitalService
             "Hospital created successfully.");
     }
 
-    public Task<ApiResponse<string>> DeleteAsync(Guid id)
+    public async Task<ApiResponse<string>> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var hospital = await _hospitalRepository.GetByIdAsync(id);
+
+        if (hospital == null)
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Hospital not found.");
+        }
+
+        await _hospitalRepository.DeleteAsync(id);
+
+        return ApiResponse<string>.SuccessResponse(
+            "Hospital deleted successfully.",
+            "Success");
     }
 
     public async Task<ApiResponse<IEnumerable<HospitalListResponse>>> GetAllAsync()
@@ -242,6 +254,48 @@ public class HospitalService : IHospitalService
 
         return ApiResponse<string>.SuccessResponse(
             "Hospital updated successfully.",
+            "Success");
+    }
+    public async Task<ApiResponse<string>> ActivateAsync(Guid id)
+    {
+        var hospital = await _hospitalRepository.GetByIdAsync(id);
+
+        if (hospital == null)
+        {
+            return ApiResponse<string>.FailureResponse("Hospital not found.");
+        }
+
+        if (hospital.IsActive)
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Hospital is already active.");
+        }
+
+        await _hospitalRepository.ActivateAsync(id);
+
+        return ApiResponse<string>.SuccessResponse(
+            "Hospital activated successfully.",
+            "Success");
+    }
+    public async Task<ApiResponse<string>> DeactivateAsync(Guid id)
+    {
+        var hospital = await _hospitalRepository.GetByIdAsync(id);
+
+        if (hospital == null)
+        {
+            return ApiResponse<string>.FailureResponse("Hospital not found.");
+        }
+
+        if (!hospital.IsActive)
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Hospital is already inactive.");
+        }
+
+        await _hospitalRepository.DeactivateAsync(id);
+
+        return ApiResponse<string>.SuccessResponse(
+            "Hospital deactivated successfully.",
             "Success");
     }
 }

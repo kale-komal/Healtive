@@ -10,6 +10,12 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Healtive.Infrastructure.Repositories.Hospitals;
 using Healtive.Infrastructure.Services.Hospitals;
+using Healtive.Infrastructure.Repositories.SubscriptionPlans;
+using Healtive.Infrastructure.Services.SubscriptionPlans;
+using Healtive.Infrastructure.Repositories.HospitalSubscriptions;
+using Healtive.Infrastructure.Services.HospitalSubscriptions;
+using Healtive.Infrastructure.Services.Dashboard;
+using Healtive.Infrastructure.Repositories.Dashboard;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,6 +64,12 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddScoped<IHospitalRepository, HospitalRepository>();
 builder.Services.AddScoped<IHospitalService, HospitalService>();
+builder.Services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
+builder.Services.AddScoped<ISubscriptionPlanService, SubscriptionPlanService>();
+builder.Services.AddScoped<IHospitalSubscriptionRepository, HospitalSubscriptionRepository>();
+builder.Services.AddScoped<IHospitalSubscriptionService, HospitalSubscriptionService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
 
 var app = builder.Build();

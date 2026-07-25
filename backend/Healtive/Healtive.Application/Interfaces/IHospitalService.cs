@@ -17,4 +17,8 @@ public interface IHospitalService
         UpdateHospitalRequest request);
 
     Task<ApiResponse<string>> DeleteAsync(Guid id);
+
+    Task<ApiResponse<string>> ActivateAsync(Guid id);
+
+    Task<ApiResponse<string>> DeactivateAsync(Guid id);
 }

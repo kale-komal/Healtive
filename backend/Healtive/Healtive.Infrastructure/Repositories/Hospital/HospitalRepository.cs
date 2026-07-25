@@ -243,7 +243,22 @@ AND IsDeleted=0;";
 
     public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+UPDATE Hospitals
+SET
+    IsDeleted = 1,
+    IsActive = 0,
+    UpdatedAt = @UpdatedAt
+WHERE Id = @Id
+AND IsDeleted = 0;";
+
+        await connection.ExecuteAsync(sql, new
+        {
+            Id = id,
+            UpdatedAt = DateTime.UtcNow
+        });
     }
 
     public async Task CreateRoleAsync(Role role)
@@ -377,5 +392,43 @@ AND IsDeleted = 0;";
             {
                 Code = code
             }) > 0;
+    }
+
+    public async Task ActivateAsync(Guid id)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+UPDATE Hospitals
+SET
+    IsActive = 1,
+    UpdatedAt = @UpdatedAt
+WHERE Id = @Id
+AND IsDeleted = 0;";
+
+        await connection.ExecuteAsync(sql, new
+        {
+            Id = id,
+            UpdatedAt = DateTime.UtcNow
+        });
+    }
+
+    public async Task DeactivateAsync(Guid id)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+UPDATE Hospitals
+SET
+    IsActive = 0,
+    UpdatedAt = @UpdatedAt
+WHERE Id = @Id
+AND IsDeleted = 0;";
+
+        await connection.ExecuteAsync(sql, new
+        {
+            Id = id,
+            UpdatedAt = DateTime.UtcNow
+        });
     }
 }

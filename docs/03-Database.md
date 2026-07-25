@@ -46,6 +46,36 @@ Each hospital can have one or more branches.
 
 The module also manages subscription plans, billing cycles, trial periods, and activation status.
 
+# Module 2 – Authentication & Authorization
+
+## Purpose
+
+This module manages authentication, authorization, user accounts, roles, permissions, login history, refresh tokens, and audit logging.
+
+Every hospital manages its own staff authentication independently.
+
+Patients have a separate authentication module and are not part of this module.
+
+## Business Rules
+
+1. Every staff member has one user account.
+
+2. A user belongs to one hospital.
+
+3. A user may belong to one branch.
+
+4. Users can have multiple roles.
+
+5. Roles can have multiple permissions.
+
+6. Authentication uses JWT Access Tokens and Refresh Tokens.
+
+7. Every successful and failed login is recorded.
+
+8. Every important action is stored in Audit Logs.
+
+9. Patients use a separate authentication system.
+
 ## Business Rules
 
 1. Every hospital is an independent tenant.
@@ -71,18 +101,20 @@ The module also manages subscription plans, billing cycles, trial periods, and a
 # Table of Contents
 
 1. Overview
-2. Architecture
+2. High Level Architecture
 3. Module 1 – SaaS Management
 4. Module 2 – Authentication & Authorization
 5. Module 3 – Organization
 6. Module 4 – Patient Management
 7. Module 5 – Appointment Management
-8. Module 6 – Prescription Management
-9. Module 7 – Billing
-10. Module 8 – Pharmacy
-11. Module 9 – Laboratory
-12. Module 10 – Notifications
-13. Module 11 – Audit Logs
+8. Module 6 – Medical Records
+9. Module 7 – Prescription Management
+10. Module 8 – Billing
+11. Module 9 – Pharmacy
+12. Module 10 – Laboratory
+13. Module 11 – Notifications
+14. Module 12 – Reports & Analytics
+15. Module 13 – Audit Logs
 
 ## High Level Architecture
 
@@ -240,3 +272,50 @@ HospitalSubscriptions
         │
         │ Many
 Hospitals
+
+## Table: Users
+
+Purpose
+
+Stores every hospital staff member that can log into the system.
+
+Detailed column documentation will be added in Version 1.1.
+
+# Current Database Progress
+
+## Completed
+
+### Module 1 – SaaS
+
+- ✅ Hospitals
+- ✅ Branches
+- ✅ SubscriptionPlans
+- ✅ HospitalSubscriptions
+
+### Module 2 – Authentication
+
+- ✅ Users
+- ✅ Roles
+- ✅ Permissions
+- ✅ UserRoles
+- ✅ RolePermissions
+- ✅ UserRefreshTokens
+- ✅ UserLoginHistory
+
+### Module 3 – Audit
+
+- ✅ AuditLogs
+
+## Next Module
+
+⬜ Departments
+
+⬜ DoctorSpecializations
+
+⬜ Doctors
+
+⬜ DoctorDepartments
+
+⬜ DoctorAvailability
+
+⬜ DoctorLeaves

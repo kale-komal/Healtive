@@ -1,0 +1,56 @@
+:root {
+
+  /* ==========================================
+     COLORS
+  ========================================== */
+
+  --primary: #2D7EF9;
+  --primary-hover: #1F6EE5;
+  --primary-light: #EAF3FF;
+
+  --secondary: #15B79E;
+  --secondary-light: #E8FBF7;
+
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  --background: #F7FAFC;
+  --surface: #FFFFFF;
+
+  --text-dark: #1F2937;
+  --text: #374151;
+  --text-light: #6B7280;
+
+  --border: #E5E7EB;
+
+  /* ==========================================
+     TYPOGRAPHY
+  ========================================== */
+
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+
+  /* ==========================================
+     SPACING
+  ========================================== */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  /* ==========================================
+     SHADOWS
+  ========================================== */
+
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.05);
+  --shadow-md: 0 8px 25px rgba(0,0,0,.08);
+  --shadow-lg: 0 15px 40px rgba(0,0,0,.12);
+
+  /* ==========================================
+     TRANSITION
+  ========================================== */
+
+  --transition: .3s ease;
+}
