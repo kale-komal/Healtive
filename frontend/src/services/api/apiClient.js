@@ -6,4 +6,4 @@ export default function WebsiteLayout({ children }) {
       {children}
     </>
   );
-}
+}s
