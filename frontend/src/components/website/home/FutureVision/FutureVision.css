@@ -1,0 +1,233 @@
+/*=====================================
+  FUTURE VISION
+======================================*/
+
+.future-vision{
+
+    position:relative;
+
+    padding:80px 0;
+
+    overflow:hidden;
+
+}
+
+/* Background Text */
+
+.future-bg-text{
+
+    position:absolute;
+
+    left:50%;
+    top:40%;
+
+    transform:translate(-50%,-50%);
+
+    font-size:9rem;
+
+    font-weight:800;
+
+    letter-spacing:12px;
+
+    color:rgba(45,126,249,.1);
+
+    white-space:nowrap;
+
+    user-select:none;
+
+    pointer-events:none;
+
+    z-index:0;
+
+}
+
+/* Content */
+
+.future-content{
+
+    position:relative;
+
+    z-index:2;
+
+    max-width:900px;
+
+    margin:auto;
+
+    text-align:center;
+
+}
+
+/* Tag */
+
+.future-tag{
+
+    display:inline-block;
+
+    padding:10px 22px;
+
+    border-radius:50px;
+
+    background:#EEF5FF;
+
+    color:var(--primary);
+
+    font-weight:600;
+
+    margin-bottom:26px;
+
+}
+
+/* Heading */
+
+.future-content h2{
+
+    font-size:3.5rem;
+
+    line-height:1.15;
+
+    font-weight:700;
+
+    color:#172033;
+
+    margin-bottom:30px;
+
+}
+
+.future-content h2 span{
+
+    color:var(--primary);
+
+}
+
+/* Description */
+
+.future-content p{
+
+    max-width:700px;
+
+    margin:auto;
+
+    color:#667085;
+
+    font-size:1.15rem;
+
+    line-height:1.9;
+
+}
+
+/* Buttons */
+
+.future-buttons{
+
+    margin-top:45px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:18px;
+
+}
+
+.future-btn-primary{
+
+    border:none;
+
+    height:58px;
+
+    padding:0 34px;
+
+    border-radius:50px;
+
+    background:var(--primary);
+
+    color:#fff;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.future-btn-primary:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 15px 35px rgba(45,126,249,.25);
+
+}
+
+.future-btn-outline{
+
+    height:58px;
+
+    padding:0 34px;
+
+    border-radius:50px;
+
+    border:1px solid #D9E4F2;
+
+    background:#fff;
+
+    color:#172033;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.future-btn-outline:hover{
+
+    border-color:var(--primary);
+
+    color:var(--primary);
+
+}
+
+/* Mobile */
+
+@media(max-width:991px){
+
+.future-vision{
+
+padding:90px 0;
+
+}
+
+.future-bg-text{
+
+font-size:3.8rem;
+
+letter-spacing:4px;
+
+top:35%;
+
+}
+
+.future-content h2{
+
+font-size:2.4rem;
+
+}
+
+.future-content p{
+
+font-size:1rem;
+
+}
+
+.future-buttons{
+
+flex-direction:column;
+
+}
+
+.future-btn-primary,
+.future-btn-outline{
+
+width:100%;
+
+}
+
+}
