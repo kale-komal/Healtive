@@ -1,0 +1,87 @@
+
+.workflow-strip-box{
+
+    background:#F4F8FF;
+
+    border-radius:34px;
+
+    padding:50px 25px;
+
+    text-align:center;
+
+    border:1px solid #E8EFFB;
+
+}
+
+.workflow-icon{
+
+    font-size:62px;
+
+    color:var(--primary);
+
+    margin-bottom:35px;
+
+}
+
+.workflow-strip-box h2{
+
+    max-width:900px;
+
+    margin:auto;
+
+    font-size:3rem;
+
+    line-height:1.35;
+
+    font-weight:450;
+
+    color:#172033;
+
+}
+.workflow-strip-box h2{
+
+    max-width:900px;
+
+    margin:auto;
+
+    font-size:3rem;
+
+    line-height:1.35;
+
+    font-weight:500;
+
+   background:linear-gradient(
+    135deg,
+    #111827 10%,
+    #334155 45%,
+    #2D7EF9 100%
+);
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+
+}
+
+
+@media(max-width:991px){
+
+.workflow-strip-box{
+
+padding:60px 25px;
+
+}
+
+.workflow-strip-box h2{
+
+font-size:2rem;
+
+}
+
+.workflow-icon{
+
+font-size:46px;
+
+}
+
+}

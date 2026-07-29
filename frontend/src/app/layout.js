@@ -3,6 +3,7 @@ import { Outfit, Noto_Sans } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import BootstrapClient from "@/components/common/BootstrapClient";
+import AOSProvider from "@/components/common/AOSProvider";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -30,7 +31,7 @@ export default function RootLayout({ children }) {
       <body className={`${outfit.variable} ${notoSans.variable}`}>
 
         <BootstrapClient />
-
+        <AOSProvider/>
         {children}
 
       </body>

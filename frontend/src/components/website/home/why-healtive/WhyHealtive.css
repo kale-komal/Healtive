@@ -1,0 +1,299 @@
+/*==========================================
+WHY HEALTIVE
+==========================================*/
+
+.why-healtive{
+
+    background:linear-gradient(180deg,#ffffff 0%,#F8FBFF 100%);
+
+}
+.why-healtive{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:#F9FBFE;
+
+}
+
+.why-healtive::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:420px;
+
+    height:420px;
+
+    background:#DCEEFF;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    top:-180px;
+
+    left:-120px;
+
+    opacity:.7;
+
+}
+
+.why-healtive::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:380px;
+
+    height:380px;
+
+    background:#EAF4FF;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    bottom:-180px;
+
+    right:-120px;
+
+    opacity:.8;
+
+}
+/*==========================================
+Heading
+==========================================*/
+
+.section-heading{
+
+    text-align:center;
+
+    max-width:760px;
+
+    margin:0 auto 70px;
+
+}
+
+.section-heading span{
+
+    display:inline-block;
+
+    padding:10px 22px;
+
+    border-radius:50px;
+
+    background:#EAF3FF;
+
+    color:var(--primary);
+
+    font-size:.9rem;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    margin-bottom:22px;
+
+}
+
+.section-heading h2{
+
+    font-size:3rem;
+
+    font-weight:700;
+
+    color:#101828;
+
+    line-height:1.2;
+
+    margin-bottom:22px;
+
+}
+
+.section-heading p{
+
+    color:#667085;
+
+    font-size:1.1rem;
+
+    line-height:1.8;
+
+}
+
+/*==========================================
+Card
+==========================================*/
+
+.feature-card{
+
+    height:100%;
+
+    padding:42px;
+
+    border-radius:32px;
+
+    background:#fff;
+
+    border:1px solid #EEF2F6;
+
+    transition:.35s;
+
+    box-shadow:0 8px 30px rgba(15,23,42,.04);
+
+}
+
+.feature-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 25px 60px rgba(45,126,249,.12);
+
+}
+
+/*==========================================
+Blue Card
+==========================================*/
+
+.blue-card{
+
+    background:linear-gradient(135deg,#2D7EF9,#5A9EFF);
+
+    color:#fff;
+
+}
+
+.blue-card h3,
+
+.blue-card p,
+
+.blue-card .feature-footer{
+
+    color:#fff !important;
+
+}
+
+.blue-card .feature-icon{
+
+    background:rgba(255,255,255,.18);
+
+}
+
+.blue-card .feature-icon i{
+
+    color:#fff;
+
+}
+
+/*==========================================
+Icon
+==========================================*/
+
+.feature-icon{
+
+    width:72px;
+
+    height:72px;
+
+    border-radius:22px;
+
+    background:#EEF5FF;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin-bottom:28px;
+
+}
+
+.feature-icon i{
+
+    font-size:32px;
+
+    color:var(--primary);
+
+}
+
+/*==========================================
+Text
+==========================================*/
+
+.feature-card h3{
+
+    font-size:1.8rem;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+
+    color:#101828;
+
+}
+
+.feature-card p{
+
+    color:#667085;
+
+    line-height:1.8;
+
+    margin-bottom:35px;
+
+    font-size:1rem;
+
+}
+
+.feature-footer{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:10px 18px;
+
+    border-radius:50px;
+
+    background:#F4F7FB;
+
+    font-weight:600;
+
+    color:var(--primary);
+
+}
+
+.blue-card .feature-footer{
+
+    background:rgba(255,255,255,.15);
+
+}
+
+/*==========================================
+Responsive
+==========================================*/
+
+@media(max-width:991px){
+
+.why-healtive{
+
+padding:90px 0;
+
+}
+
+.section-heading h2{
+
+font-size:2.3rem;
+
+}
+
+.feature-card{
+
+padding:32px;
+
+}
+
+}
