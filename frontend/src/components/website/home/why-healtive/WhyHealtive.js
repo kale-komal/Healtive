@@ -55,9 +55,9 @@ export default function WhyHealtive() {
 
         <div className="section-heading">
 
-          <span>WHY HEALTIVE</span>
+          <span data-aos="fade-up">WHY HEALTIVE</span>
 
-          <h2>
+          <h2 data-aos="fade-up" data-aos-delay="100">
             Built for Modern Hospitals,
             <br />
             Designed for Better Patient Care.
@@ -74,7 +74,8 @@ export default function WhyHealtive() {
 
           {cards.map((card, index) => (
 
-            <div className="col-lg-4 col-md-6" key={index}>
+            <div className="col-lg-4 col-md-6" key={index}  data-aos="fade-up"
+    data-aos-delay={index * 100}>
 
               <div className={`feature-card ${card.blue ? "blue-card" : ""}`}>
 

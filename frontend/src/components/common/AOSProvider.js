@@ -5,14 +5,18 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 export default function AOSProvider() {
-    useEffect(() => {
-        AOS.init({
-            duration: 800,
-            easing: "ease-out",
-            once: true,
-            offset: 80,
-        });
-    }, []);
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 60,
+      easing: "ease-out",
+    });
 
-    return null;
+    requestAnimationFrame(() => {
+      AOS.refreshHard();
+    });
+  }, []);
+
+  return null;
 }

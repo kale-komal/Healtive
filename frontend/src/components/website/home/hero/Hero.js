@@ -20,11 +20,11 @@ export default function Hero() {
 
                         <div className="hero-content">
 
-                            <span className="hero-badge">
+                            <span className="hero-badge" data-aos="fade-down">
                                 Trusted by Healthcare Organizations
                             </span>
 
-                            <h1 className="hero-title">
+                            <h1 className="hero-title" data-aos="fade-right" data-aos-delay="100">
 
                                 Modern Hospital
                                 <br />
@@ -96,7 +96,7 @@ export default function Hero() {
 
                         <div className="hero-image-wrapper">
 
-                            <div className="hero-image-card">
+                            <div className="hero-image-card" data-aos="zoom-in-left" data-aos-duration="900">
 
                                 <Image
                                     src="/images/home-banner.png"

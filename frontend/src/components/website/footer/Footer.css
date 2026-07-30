@@ -1,0 +1,273 @@
+/* =======================================
+   FOOTER
+======================================= */
+
+.footer{
+
+    margin-top:120px;
+
+    padding:70px 0 30px;
+
+    border-top:1px solid #E9EEF5;
+
+    background:#fff;
+
+}
+
+/* =======================================
+   TOP
+======================================= */
+
+.footer-top{
+
+    display:grid;
+
+    grid-template-columns:1.4fr .9fr 1fr;
+
+    gap:70px;
+
+    padding-bottom:45px;
+
+    border-bottom:1px solid #EDF2F7;
+
+}
+
+.footer-logo{
+
+    display:inline-block;
+
+    margin-bottom:24px;
+
+}
+
+.footer-about p{
+
+    max-width:420px;
+
+    color:#667085;
+
+    line-height:1.9;
+
+    font-size:16px;
+
+}
+
+/* =======================================
+   LINKS
+======================================= */
+
+.footer-links h5,
+.footer-contact h5{
+
+    font-size:20px;
+
+    font-weight:700;
+
+    margin-bottom:26px;
+
+    color:#172033;
+
+}
+
+.footer-links ul{
+
+    list-style:none;
+
+    margin:0;
+
+    padding:0;
+
+}
+
+.footer-links li{
+
+    margin-bottom:16px;
+
+}
+
+.footer-links a{
+
+    color:#667085;
+
+    transition:.25s;
+
+}
+
+.footer-links a:hover{
+
+    color:var(--primary);
+
+    padding-left:5px;
+
+}
+
+/* =======================================
+   CONTACT
+======================================= */
+
+.footer-contact>a{
+
+    display:inline-block;
+
+    margin-bottom:18px;
+
+    color:#172033;
+
+    font-weight:600;
+
+}
+
+.footer-contact p{
+
+    color:#667085;
+
+    line-height:1.8;
+
+    margin-bottom:28px;
+
+}
+
+.footer-contact h6{
+
+    margin-bottom:18px;
+
+    font-weight:700;
+
+    color:#172033;
+
+}
+
+/* =======================================
+   SOCIAL
+======================================= */
+
+.footer-social{
+
+    display:flex;
+
+    gap:12px;
+
+}
+
+.footer-social a{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    background:#F6F8FC;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#475467;
+
+    font-size:18px;
+
+    transition:.3s;
+
+}
+
+.footer-social a:hover{
+
+    background:var(--primary);
+
+    color:#fff;
+
+    transform:translateY(-3px);
+
+}
+
+/* =======================================
+   BOTTOM
+======================================= */
+
+.footer-bottom{
+
+    padding-top:28px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    color:#667085;
+
+    font-size:15px;
+
+}
+
+/* =======================================
+   RESPONSIVE
+======================================= */
+
+@media(max-width:991px){
+
+.footer{
+
+    margin-top:80px;
+
+}
+
+.footer-top{
+
+    grid-template-columns:1fr;
+
+    gap:45px;
+
+}
+
+.footer-about p{
+
+    max-width:100%;
+
+}
+
+.footer-bottom{
+
+    flex-direction:column;
+
+    gap:12px;
+
+    text-align:center;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.footer{
+
+    padding:60px 0 25px;
+
+}
+
+.footer-links h5,
+.footer-contact h5{
+
+    font-size:18px;
+
+}
+
+.footer-social{
+
+    flex-wrap:wrap;
+
+}
+
+.footer-social a{
+
+    width:42px;
+
+    height:42px;
+
+}
+
+}

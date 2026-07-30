@@ -1,0 +1,166 @@
+/* ==========================================
+   ABOUT PAGE
+========================================== */
+
+.about-page{
+    background:#fff;
+}
+
+/* ==========================================
+   HERO
+========================================== */
+
+.about-hero{
+    padding:100px 0 70px;
+}
+
+.about-tag{
+    display:inline-flex;
+    align-items:center;
+    padding:10px 18px;
+    background:#F3F6FB;
+    color:#667085;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:24px;
+}
+
+.about-hero h1{
+    font-size:60px;
+    line-height:63px;
+    font-weight:600;
+    color:#101828;
+    max-width:1100px;
+    margin-bottom:32px;
+}
+
+.about-hero p{
+    max-width:850px;
+    font-size:18px;
+    line-height:1.8;
+    color:#667085;
+}
+
+/* ==========================================
+   STATS
+========================================== */
+
+.about-stats{
+    padding-bottom:80px;
+}
+
+.stat-card{
+
+    height:100%;
+
+    background:#fff;
+
+    border:1px solid #E7ECF4;
+
+    border-radius:26px;
+
+    padding:32px;
+
+    transition:.3s;
+}
+
+.stat-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 20px 50px rgba(0,0,0,.05);
+
+}
+
+.stat-card span{
+
+    display:block;
+
+    color:#667085;
+
+    font-size:14px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    margin-bottom:14px;
+
+}
+
+.stat-card h3{
+
+    font-size:20px !important;
+
+    color:#101828;
+
+    font-weight:700;
+
+    margin:0;
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:991px){
+
+.about-hero{
+
+padding:70px 0 50px;
+
+}
+
+.about-hero h1{
+
+font-size:52px;
+
+}
+
+.about-hero p{
+
+font-size:19px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.about-hero{
+
+padding:50px 0 40px;
+
+}
+
+.about-hero h1{
+
+font-size:38px;
+
+line-height:1.15;
+
+letter-spacing:-1px;
+
+}
+
+.about-hero p{
+
+font-size:17px;
+
+}
+
+.stat-card{
+
+padding:24px;
+
+}
+
+.stat-card h3{
+
+font-size:28px;
+
+}
+
+}

@@ -49,9 +49,9 @@ export default function Modules() {
                     data-aos="fade-up"
                 >
 
-                    <span>HOSPITAL MODULES</span>
+                    <span data-aos="fade-up">HOSPITAL MODULES</span>
 
-                    <h2>
+                    <h2 data-aos="fade-up" data-aos-delay="100">
                         Everything Your Hospital Needs,
                         <br />
                         All In One Platform.
