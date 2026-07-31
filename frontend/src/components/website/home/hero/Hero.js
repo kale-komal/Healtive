@@ -96,7 +96,7 @@ export default function Hero() {
 
                         <div className="hero-image-wrapper">
 
-                            <div className="hero-image-card" data-aos="zoom-in-left" data-aos-duration="900">
+                            <div className="hero-image-card">
 
                                 <Image
                                     src="/images/home-banner.png"

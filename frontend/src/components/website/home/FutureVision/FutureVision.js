@@ -14,7 +14,7 @@ export default function FutureVision() {
                 >
 
                     <span className="future-bg-text">
-                        HEALTHCARE
+                        HEALTIVE
                     </span>
 
                     <span className="future-tag">

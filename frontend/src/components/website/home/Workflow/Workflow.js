@@ -4,7 +4,7 @@ import "./Workflow.css";
 
 export default function Workflow() {
     return (
-        <section className="workflow-strip">
+        <section className="workflow-strip mt-5">
 
     <div className="container">
 
