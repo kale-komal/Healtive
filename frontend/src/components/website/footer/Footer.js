@@ -83,15 +83,15 @@ export default function Footer() {
 
                         <div className="footer-social">
 
-                            <a href="#"><i className="bi bi-facebook"></i></a>
+                            <a href="https://www.facebook.com/people/Healtive/61591970510846/" target="blank"><i className="bi bi-facebook"></i></a>
 
-                            <a href="#"><i className="bi bi-instagram"></i></a>
+                            <a href="https://www.instagram.com/healtive.care" target="blank"><i className="bi bi-instagram"></i></a>
 
-                            <a href="#"><i className="bi bi-linkedin"></i></a>
+                            <a href="https://in.linkedin.com/company/healtive" target="blank"><i className="bi bi-linkedin"></i></a>
 
-                            <a href="#"><i className="bi bi-youtube"></i></a>
+                            <a href="https://www.youtube.com/@healtive" target="blank"><i className="bi bi-youtube"></i></a>
 
-                            <a href="#"><i className="bi bi-twitter-x"></i></a>
+                            <a href="https://x.com/we_healtive" target="blank"><i className="bi bi-twitter-x"></i></a>
 
                         </div>
 

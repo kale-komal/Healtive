@@ -1,0 +1,107 @@
+/* ==========================================
+   TERMS PAGE
+========================================== */
+
+.terms-page{
+    background:#fff;
+}
+
+.terms-content{
+    padding:90px 0 100px;
+}
+
+.terms-content h1{
+    font-size:56px;
+    line-height:1.1;
+    font-weight:500;
+    color:#101828;
+    letter-spacing:-2px;
+    margin-bottom:12px;
+}
+
+.terms-date{
+    color:#98A2B3;
+    font-size:14px;
+    margin-bottom:40px;
+}
+
+.terms-content p{
+    font-size:17px;
+    line-height:1.9;
+    color:#667085;
+    margin-bottom:22px;
+}
+
+.terms-content h2{
+    font-size:32px;
+    font-weight:500;
+    color:#101828;
+    margin-top:55px;
+    margin-bottom:20px;
+    letter-spacing:-1px;
+}
+
+.terms-content ul{
+    padding-left:20px;
+    margin-bottom:24px;
+}
+
+.terms-content ul li{
+    list-style:disc;
+    color:#667085;
+    font-size:17px;
+    line-height:1.9;
+    margin-bottom:10px;
+}
+
+.terms-link{
+    border-top:1px solid #E7EDF6;
+    margin-top:60px;
+    padding-top:30px;
+}
+
+.terms-link a{
+    color:var(--primary);
+    font-weight:600;
+}
+
+.terms-link a:hover{
+    opacity:.8;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:991px){
+
+.terms-content{
+    padding:70px 0;
+}
+
+.terms-content h1{
+    font-size:46px;
+}
+
+.terms-content h2{
+    font-size:28px;
+}
+
+}
+
+@media(max-width:576px){
+
+.terms-content h1{
+    font-size:38px;
+}
+
+.terms-content h2{
+    font-size:24px;
+}
+
+.terms-content p,
+.terms-content ul li{
+    font-size:16px;
+}
+
+}

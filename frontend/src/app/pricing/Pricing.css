@@ -1,0 +1,901 @@
+/* ==========================================
+   PRICING PAGE
+========================================== */
+
+.pricing-page{
+    background:#fff;
+}
+
+/* ==========================================
+   HERO
+========================================== */
+
+.pricing-hero{
+
+    padding:100px 0 70px;
+
+    text-align:center;
+
+}
+
+.pricing-hero h1{
+
+    font-size:60px;
+
+    line-height:1.08;
+
+    font-weight:500;
+
+    color:#101828;
+
+    letter-spacing:-2px;
+
+    margin-bottom:28px;
+
+}
+
+.pricing-hero h1 span{
+
+    background:linear-gradient(90deg,#2D7EF9,#69A8FF);
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+
+}
+
+.pricing-hero p{
+
+    max-width:720px;
+
+    margin:auto;
+
+    font-size:19px;
+
+    line-height:1.8;
+
+    color:#667085;
+
+}
+
+/* ==========================================
+   BILLING TOGGLE
+========================================== */
+
+.billing-toggle{
+
+    margin-top:45px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    background:#F5F8FD;
+
+    border:1px solid #E5EDF7;
+
+    padding:6px;
+
+    border-radius:999px;
+
+    gap:6px;
+
+}
+
+.billing-toggle button{
+
+    border:none;
+
+    background:transparent;
+
+    height:38px;
+
+    padding:0 24px;
+
+    border-radius:999px;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    color:#667085;
+
+    transition:.3s;
+
+    position:relative;
+
+}
+
+.billing-toggle button:hover{
+
+    color:#101828;
+
+}
+
+.billing-toggle button.active{
+
+    background:#2D7EF9;
+
+    color:#fff;
+
+    box-shadow:0 12px 30px rgba(45,126,249,.25);
+
+}
+
+.billing-toggle button span{
+
+    margin-left:8px;
+
+    background:#fff;
+
+    color:#2D7EF9;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    padding:4px 10px;
+
+    border-radius:999px;
+
+}
+
+/* ==========================================
+   PLANS
+========================================== */
+
+.pricing-plans{
+
+    padding:20px 0 70px;
+
+}
+
+.pricing-card{
+
+    position:relative;
+
+    height:100%;
+
+    background:#fff;
+
+    border:1px solid #E7EDF6;
+
+    border-radius:34px;
+
+    padding:40px;
+
+    transition:.35s;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.pricing-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 25px 60px rgba(16,24,40,.08);
+
+}
+
+.pricing-card h5{
+
+    font-size:24px;
+
+    font-weight:500;
+
+    color:#101828;
+
+    margin-bottom:25px;
+
+}
+
+.price{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    font-size:36px;
+
+    font-weight:700;
+
+    color:#101828;
+
+    line-height:1;
+
+    margin-bottom:15px;
+
+
+}
+
+.price small{
+
+    font-size:16px;
+
+    color:#667085;
+
+    font-weight:500;
+
+    margin-bottom:8px;
+
+}
+
+.price del{
+
+    font-size:15px;
+
+    color:#98A2B3;
+
+    margin-left:6px;
+
+    margin-bottom:8px;
+
+}
+
+.bill-info{
+
+    font-size:13px;
+
+    color:var(--primary);
+
+    margin-bottom:30px;
+
+}
+
+.enterprise-text{
+
+    color:#667085;
+
+    font-size:14px;
+
+    margin-bottom:30px;
+
+}
+
+.price.custom{
+
+    font-size:35px;
+
+}
+
+/* ==========================================
+   FEATURE LIST
+========================================== */
+
+.pricing-card ul{
+
+    list-style:none;
+
+    padding:0;
+
+    margin:0;
+
+    flex:1;
+
+}
+
+.pricing-card ul li{
+
+    position:relative;
+
+    padding-left:34px;
+
+    margin-bottom:12px;
+
+    color:#475467;
+
+    font-size:15px;
+
+    line-height:1.7;
+
+}
+
+.pricing-card ul li::before{
+
+    content:"✓";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:22px;
+
+    height:22px;
+
+    border-radius:50%;
+
+    background:#EAF3FF;
+
+    color:var(--primary);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+/* ==========================================
+   PREMIUM CARD
+========================================== */
+
+.pricing-card.active{
+
+    background:linear-gradient(180deg,#2D7EF9 0%,#236BE0 100%);
+
+    border:none;
+
+    color:#fff;
+
+    transform:scale(1.03);
+
+    box-shadow:0 30px 70px rgba(45,126,249,.28);
+
+}
+
+.pricing-card.active:hover{
+
+    transform:translateY(-8px) scale(1.03);
+
+}
+
+.pricing-card.active h5{
+
+    color:#fff;
+
+}
+
+.pricing-card.active .price{
+
+    color:#fff;
+
+}
+
+.pricing-card.active .price small{
+
+    color:rgba(255,255,255,.85);
+
+}
+
+.pricing-card.active .price del{
+
+    color:rgba(255,255,255,.6);
+
+}
+
+.pricing-card.active .bill-info{
+
+    color:#DCEAFF;
+
+}
+
+.pricing-card.active .enterprise-text{
+
+    color:rgba(255,255,255,.85);
+
+}
+
+.pricing-card.active ul li{
+
+    color:#fff;
+
+}
+
+.pricing-card.active ul li::before{
+
+    background:rgba(255,255,255,.18);
+
+    color:#fff;
+
+}
+
+/* ==========================================
+   RECOMMENDED BADGE
+========================================== */
+
+.recommended{
+
+    position:absolute;
+
+    top:-14px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    background:#101828;
+
+    color:#fff;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    padding:8px 16px;
+
+    border-radius:999px;
+
+    text-transform:uppercase;
+
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.pricing-btn{
+
+    margin-top:28px;
+
+    height:54px;
+
+    border-radius:999px;
+
+    background:#101828;
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-decoration:none;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.pricing-btn:hover{
+
+    color:#fff;
+
+    background:#000;
+
+    transform:translateY(-2px);
+
+}
+
+.pricing-btn.white{
+
+    background:#fff;
+
+    color:var(--primary);
+
+}
+
+.pricing-btn.white:hover{
+
+    background:#F5F8FF;
+
+    color:var(--primary);
+
+}
+
+/* ==========================================
+   NOTE
+========================================== */
+
+.pricing-note{
+
+    text-align:center;
+
+    margin-top:15px;
+
+    margin-bottom:90px;
+
+    color:#667085;
+
+    font-size:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.pricing-note::before{
+
+    content:"ⓘ";
+
+    color:var(--primary);
+
+    font-weight:700;
+
+}
+
+/* ==========================================
+   FAQ
+========================================== */
+
+.pricing-faq{
+
+    padding-bottom:100px;
+
+}
+
+.pricing-faq h2{
+
+    text-align:center;
+
+    font-size:42px;
+
+    font-weight:500;
+
+    color:#101828;
+
+    margin-bottom:50px;
+
+    letter-spacing:-1px;
+
+}
+
+.accordion{
+
+    border:none;
+
+}
+
+.accordion-item{
+
+    border:1px solid #E7EDF6 !important;
+
+    border-radius:22px !important;
+
+    overflow:hidden;
+
+    margin-bottom:18px;
+
+    background:#fff;
+
+    transition:.3s;
+
+}
+
+.accordion-item:hover{
+
+    box-shadow:0 16px 40px rgba(16,24,40,.06);
+
+}
+
+.accordion-button{
+
+    background:#fff !important;
+
+    padding:24px 28px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:#101828;
+
+    box-shadow:none !important;
+
+}
+
+.accordion-button:not(.collapsed){
+
+    color:var(--primary);
+
+}
+
+.accordion-button::after{
+
+    background-size:18px;
+
+}
+
+.accordion-body{
+
+    padding:0 28px 24px;
+
+    color:#667085;
+
+    font-size:16px;
+
+    line-height:1.8;
+
+}
+
+.accordion-item{
+    overflow:hidden;
+}
+
+.accordion-collapse{
+    height:auto !important;
+}
+
+.accordion-body{
+    padding:0 28px 24px !important;
+    margin:0 !important;
+}
+
+.accordion-button{
+    padding:24px 28px !important;
+}
+
+.accordion-button:focus{
+    box-shadow:none;
+}
+
+.accordion-button:not(.collapsed){
+    background:#fff;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:1199px){
+
+.pricing-hero h1{
+
+font-size:56px;
+
+}
+
+.price{
+
+font-size:42px;
+
+}
+
+.pricing-card{
+
+padding:34px;
+
+}
+
+}
+
+@media(max-width:991px){
+
+.pricing-hero{
+
+padding:70px 0 55px;
+
+}
+
+.pricing-hero h1{
+
+font-size:48px;
+
+line-height:1.15;
+
+}
+
+.pricing-hero p{
+
+font-size:17px;
+
+}
+
+.billing-toggle{
+
+margin-top:35px;
+
+}
+
+.pricing-plans{
+
+padding:0 0 50px;
+
+}
+
+.pricing-card.active{
+
+transform:none;
+
+}
+
+.pricing-card.active:hover{
+
+transform:translateY(-5px);
+
+}
+
+.pricing-note{
+
+margin-bottom:70px;
+
+}
+
+.pricing-faq{
+
+padding-bottom:70px;
+
+}
+
+.pricing-faq h2{
+
+font-size:38px;
+
+}
+
+}
+
+@media(max-width:767px){
+
+.pricing-hero{
+
+padding:55px 0 45px;
+
+}
+
+.pricing-hero h1{
+
+font-size:40px;
+
+letter-spacing:-1px;
+
+}
+
+.billing-toggle{
+
+display:flex;
+
+width:100%;
+
+}
+
+.billing-toggle button{
+
+flex:1;
+
+padding:0 18px;
+
+font-size:14px;
+
+}
+
+.billing-toggle button span{
+
+display:block;
+
+margin:6px auto 0;
+
+width:max-content;
+
+}
+
+.pricing-card{
+
+padding:28px;
+
+border-radius:28px;
+
+}
+
+.price{
+
+font-size:38px;
+
+}
+
+.pricing-btn{
+
+height:50px;
+
+}
+
+.pricing-faq h2{
+
+font-size:32px;
+
+}
+
+.accordion-button{
+
+padding:20px;
+
+font-size:16px;
+
+}
+
+.accordion-body{
+
+padding:0 20px 20px;
+
+font-size:15px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.pricing-hero h1{
+
+font-size:34px;
+
+}
+
+.pricing-hero p{
+
+font-size:16px;
+
+}
+
+.price{
+
+font-size:34px;
+
+}
+
+.pricing-card h5{
+
+font-size:24px;
+
+}
+
+.pricing-card ul li{
+
+font-size:14px;
+
+}
+
+.pricing-note{
+
+font-size:14px;
+
+line-height:1.7;
+
+padding:0 15px;
+
+}
+
+}
+
+/* ---------- Bootstrap Accordion Fix ---------- */
+
+.accordion-header{
+    margin:0 !important;
+}
+
+.accordion-button{
+    margin:0 !important;
+    border:none !important;
+    box-shadow:none !important;
+}
+
+.accordion-button:not(.collapsed){
+    background:#fff;
+}
+
+.accordion-button:focus{
+    box-shadow:none;
+}
+
+.accordion-collapse{
+    margin:0 !important;
+}
+
+.accordion-body{
+    margin:0 !important;
+}

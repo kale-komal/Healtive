@@ -56,7 +56,7 @@ export default function Header() {
 
                             <li><Link href="/features">Features</Link></li>
 
-                            <li><Link href="/modules">Modules</Link></li>
+                           {/* <li><Link href="/modules">Modules</Link></li>*/}
 
                             <li><Link href="/pricing">Pricing</Link></li>
 
@@ -143,11 +143,11 @@ export default function Header() {
                         </Link>
                     </li>
 
-                    <li>
+                    {/*<li>
                         <Link href="/modules" onClick={closeMenu}>
                             Modules
                         </Link>
-                    </li>
+                    </li>*/}
 
                     <li>
                         <Link href="/pricing" onClick={closeMenu}>

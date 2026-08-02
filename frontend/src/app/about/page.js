@@ -374,11 +374,11 @@ export default function AboutPage() {
                                                     <i className="bi bi-envelope"></i>
                                                 </a>
 
-                                                <a href="#">
+                                                <a href="https://www.instagram.com/healtive.care" target="blank">
                                                     <i className="bi bi-instagram"></i>
                                                 </a>
 
-                                                <a href="#">
+                                                <a href="https://in.linkedin.com/company/healtive" target="blank">
                                                     <i className="bi bi-linkedin"></i>
                                                 </a>
 

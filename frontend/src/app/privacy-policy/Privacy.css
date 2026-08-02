@@ -1,0 +1,291 @@
+/* ==========================================
+   PRIVACY PAGE
+========================================== */
+
+.privacy-page{
+    background:#fff;
+}
+
+/* ==========================================
+   HERO
+========================================== */
+
+.privacy-hero{
+
+    padding:100px 0 70px;
+
+}
+
+.privacy-tag{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:8px 14px;
+
+    background:#F3F6FB;
+
+    color:#667085;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    margin-bottom:24px;
+
+}
+
+.privacy-hero h1{
+
+    font-size:60px;
+
+    line-height:1.08;
+
+    font-weight:600;
+
+    color:#101828;
+
+    letter-spacing:-2px;
+
+    margin-bottom:24px;
+
+}
+
+.privacy-hero p{
+
+    max-width:760px;
+
+    font-size:19px;
+
+    line-height:1.8;
+
+    color:#667085;
+
+    margin-bottom:24px;
+
+}
+
+.updated-date{
+
+    display:inline-block;
+
+    color:#98A2B3;
+
+    font-size:14px;
+
+    font-weight:500;
+
+}
+
+/* ==========================================
+   CONTENT
+========================================== */
+
+.privacy-content{
+
+    padding-bottom:70px;
+
+}
+
+.privacy-content h2{
+
+    font-size:34px;
+
+    font-weight:600;
+
+    color:#101828;
+
+    margin-top:55px;
+
+    margin-bottom:22px;
+
+    letter-spacing:-1px;
+
+}
+
+.privacy-content p{
+
+    color:#667085;
+
+    font-size:17px;
+
+    line-height:1.9;
+
+    margin-bottom:22px;
+
+}
+
+.privacy-content strong{
+
+    color:#101828;
+
+    font-weight:600;
+
+}
+
+.privacy-content ul{
+
+    list-style:disc;
+
+    padding-left:22px;
+
+    margin-bottom:24px;
+
+}
+
+.privacy-content li{
+
+    color:#667085;
+
+    font-size:17px;
+
+    line-height:1.9;
+
+    margin-bottom:14px;
+
+}
+
+/* ==========================================
+   BOTTOM
+========================================== */
+
+.privacy-bottom{
+
+    border-top:1px solid #E8EDF5;
+
+    padding:40px 0 100px;
+
+}
+
+.privacy-bottom a{
+
+    color:var(--primary);
+
+    font-size:16px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.privacy-bottom a:hover{
+
+    color:#1B6CE8;
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:991px){
+
+.privacy-hero{
+
+padding:70px 0 55px;
+
+}
+
+.privacy-hero h1{
+
+font-size:48px;
+
+line-height:1.15;
+
+}
+
+.privacy-hero p{
+
+font-size:17px;
+
+}
+
+.privacy-content h2{
+
+font-size:30px;
+
+}
+
+}
+
+@media(max-width:767px){
+
+.privacy-hero{
+
+padding:55px 0 45px;
+
+}
+
+.privacy-hero h1{
+
+font-size:40px;
+
+letter-spacing:-1px;
+
+}
+
+.privacy-content{
+
+padding-bottom:50px;
+
+}
+
+.privacy-content h2{
+
+font-size:26px;
+
+margin-top:42px;
+
+}
+
+.privacy-content p,
+
+.privacy-content li{
+
+font-size:16px;
+
+}
+
+.privacy-bottom{
+
+padding:35px 0 70px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.privacy-hero h1{
+
+font-size:34px;
+
+}
+
+.privacy-hero p{
+
+font-size:16px;
+
+}
+
+.privacy-content h2{
+
+font-size:24px;
+
+}
+
+.privacy-content p,
+
+.privacy-content li{
+
+font-size:15px;
+
+line-height:1.8;
+
+}
+
+}
