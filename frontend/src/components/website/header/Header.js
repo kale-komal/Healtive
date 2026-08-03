@@ -70,19 +70,19 @@ export default function Header() {
 
                         <div className="header-actions">
 
-                            <Link href="/login" className="btn-login">
+                            <Link href="/login" className="btn-started">
 
                                 Sign In
 
                             </Link>
 
-                            <Link href="/login" className="btn-started">
+                            {/*<Link href="/login" className="btn-started">
 
                                 Get Started
 
                                 <i className="bi bi-arrow-right"></i>
 
-                            </Link>
+                            </Link>*/}
 
                         </div>
 
@@ -181,7 +181,7 @@ export default function Header() {
                         Sign In
                     </Link>
 
-                    <Link
+                   {/* <Link
                         href="/login"
                         className="btn-started"
                         onClick={closeMenu}
@@ -190,7 +190,7 @@ export default function Header() {
 
                         <i className="bi bi-arrow-right"></i>
 
-                    </Link>
+                    </Link>*/}
 
                 </div>
 

@@ -1,0 +1,416 @@
+/* ==========================================
+   LOGIN PAGE
+========================================== */
+
+.login-page{
+    background:#fff;
+    min-height:100vh;
+    padding:90px 0;
+    display:flex;
+    align-items:center;
+}
+
+.login-wrapper{
+    display:grid;
+    grid-template-columns:1fr 520px;
+    gap:70px;
+    align-items:center;
+}
+
+/* ==========================================
+   LEFT
+========================================== */
+
+.login-tag{
+
+    display:inline-block;
+
+    background:#EAF3FF;
+
+    color:var(--primary);
+
+    padding:8px 18px;
+
+    border-radius:999px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    margin-bottom:25px;
+
+}
+
+.login-left h1{
+
+    font-size:46px;
+
+    line-height:1.08;
+
+    letter-spacing:-1px;
+
+    margin-bottom:22px;
+
+}
+
+.login-left h1 span{
+
+    background:linear-gradient(90deg,#2D7EF9,#69A8FF);
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+
+}
+
+.login-left>p{
+
+    font-size:18px;
+
+    color:#667085;
+
+    line-height:1.9;
+
+    max-width:520px;
+
+}
+
+.login-info{
+
+    margin-top:45px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:30px;
+
+}
+
+.login-info h4{
+
+    font-size:20px;
+
+    margin-bottom:8px;
+
+}
+
+.login-info p{
+
+    color:#667085;
+
+    line-height:1.8;
+
+}
+
+/* ==========================================
+   CARD
+========================================== */
+
+.login-card{
+
+    background:#fff;
+
+    border:1px solid #E7EDF6;
+
+    border-radius:32px;
+
+    padding:45px;
+
+    box-shadow:0 25px 70px rgba(16,24,40,.08);
+
+}
+
+.login-card h2{
+
+    font-size:34px;
+
+    margin-bottom:10px;
+
+}
+
+.login-card>p{
+
+    color:#667085;
+
+    margin-bottom:35px;
+
+}
+
+/* ==========================================
+   FORM
+========================================== */
+
+.form-group{
+
+    margin-bottom:22px;
+
+}
+
+.form-group label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#344054;
+
+}
+
+.password-head{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:10px;
+
+}
+
+.password-head a{
+
+    font-size:14px;
+
+    color:var(--primary);
+
+    font-weight:500;
+
+}
+
+.form-group input{
+
+    width:100%;
+
+    height:58px;
+
+    border:1px solid #D0D5DD;
+
+    border-radius:16px;
+
+    padding:0 18px;
+
+    font-size:15px;
+
+    transition:.3s;
+
+    background:#fff;
+
+}
+
+.form-group input:focus{
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 4px rgba(45,126,249,.12);
+
+}
+
+/* ==========================================
+   BUTTON
+========================================== */
+
+.login-btn{
+
+    width:100%;
+
+    height:56px;
+
+    border:none;
+
+    border-radius:999px;
+
+    background:var(--primary);
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    margin-top:10px;
+
+    transition:.3s;
+
+}
+
+.login-btn:hover{
+
+    background:#1F6EE5;
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================
+   DIVIDER
+========================================== */
+
+.login-divider{
+
+    position:relative;
+
+    text-align:center;
+
+    margin:35px 0;
+
+}
+
+.login-divider::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:50%;
+
+    width:100%;
+
+    height:1px;
+
+    background:#E7EDF6;
+
+}
+
+.login-divider span{
+
+    position:relative;
+
+    background:#fff;
+
+    padding:0 18px;
+
+    color:#98A2B3;
+
+    font-size:14px;
+
+}
+
+/* ==========================================
+   SIGNUP
+========================================== */
+
+.signup-text{
+
+    text-align:center;
+
+    color:#667085;
+
+    font-size:15px;
+
+}
+
+.signup-text a{
+
+    margin-left:6px;
+
+    color:var(--primary);
+
+    font-weight:600;
+
+}
+
+.signup-text a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:991px){
+
+.login-page{
+
+padding:60px 0;
+
+}
+
+.login-wrapper{
+
+grid-template-columns:1fr;
+
+gap:50px;
+
+}
+
+.login-left{
+
+text-align:center;
+
+}
+
+.login-left>p{
+
+margin:auto;
+
+}
+
+.login-info{
+
+margin-top:35px;
+
+}
+
+}
+
+@media(max-width:767px){
+
+.login-left h1{
+
+font-size:38px;
+
+}
+
+.login-card{
+
+padding:30px;
+
+border-radius:24px;
+
+}
+
+.login-card h2{
+
+font-size:28px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.login-page{
+
+padding:45px 0;
+
+}
+
+.login-left h1{
+
+font-size:34px;
+
+}
+
+.login-left>p{
+
+font-size:16px;
+
+}
+
+.login-card{
+
+padding:24px;
+
+}
+
+}
