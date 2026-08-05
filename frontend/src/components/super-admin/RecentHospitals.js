@@ -23,12 +23,12 @@ export default function RecentHospitals() {
         try {
 
             const response = await hospitalService.getHospitals();
-
             if (response.success) {
 
-                setHospitals(response.data);
+                setHospitals(response.data.items);
 
             }
+
 
         }
         catch (error) {

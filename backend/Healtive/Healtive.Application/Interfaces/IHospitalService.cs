@@ -8,8 +8,8 @@ public interface IHospitalService
     Task<ApiResponse<HospitalResponse>> CreateAsync(
         CreateHospitalRequest request);
 
-    Task<ApiResponse<IEnumerable<HospitalListResponse>>> GetAllAsync();
-
+    Task<ApiResponse<PagedResponse<HospitalListResponse>>> GetAllAsync(
+        HospitalFilterRequest request);
     Task<ApiResponse<HospitalResponse>> GetByIdAsync(Guid id);
 
     Task<ApiResponse<string>> UpdateAsync(

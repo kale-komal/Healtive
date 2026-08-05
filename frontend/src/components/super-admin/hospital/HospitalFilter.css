@@ -1,0 +1,36 @@
+.hospital-filter{
+
+    display:flex;
+    gap:16px;
+
+    margin-bottom:24px;
+
+}
+
+.hospital-filter input{
+
+    flex:1;
+
+}
+
+.hospital-filter select{
+
+    width:180px;
+
+}
+
+@media(max-width:768px){
+
+    .hospital-filter{
+
+        flex-direction:column;
+
+    }
+
+    .hospital-filter select{
+
+        width:100%;
+
+    }
+
+}

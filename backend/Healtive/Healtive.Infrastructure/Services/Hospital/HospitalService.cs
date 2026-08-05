@@ -167,14 +167,14 @@ public class HospitalService : IHospitalService
             "Success");
     }
 
-    public async Task<ApiResponse<IEnumerable<HospitalListResponse>>> GetAllAsync()
+    public async Task<ApiResponse<PagedResponse<HospitalListResponse>>> GetAllAsync(
+    HospitalFilterRequest request)
     {
-        var hospitals = await _hospitalRepository.GetAllAsync();
-
-        return ApiResponse<IEnumerable<HospitalListResponse>>
-            .SuccessResponse(
-                hospitals,
-                "Hospitals fetched successfully.");
+        var hospitals = await _hospitalRepository.GetAllAsync(request);
+        return ApiResponse<PagedResponse<HospitalListResponse>>
+    .SuccessResponse(
+        hospitals,
+        "Hospitals fetched successfully.");
     }
 
     public async Task<ApiResponse<HospitalResponse>> GetByIdAsync(Guid id)

@@ -1,0 +1,17 @@
+.pagination-wrapper{
+
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:16px;
+
+    margin-top:24px;
+
+}
+
+.pagination-wrapper span{
+
+    font-weight:500;
+    color:#475569;
+
+}

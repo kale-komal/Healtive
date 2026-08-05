@@ -3,6 +3,8 @@ using Healtive.Application.DTOs.Hospital;
 using Healtive.Application.Interfaces;
 using Healtive.Core.Entities;
 using Healtive.Infrastructure.Data;
+using Healtive.Application.DTOs.Common;
+
 
 namespace Healtive.Infrastructure.Repositories.Hospitals;
 
@@ -150,13 +152,48 @@ VALUES
 
         await connection.ExecuteAsync(sql, hospital);
     }
-    public async Task<IEnumerable<HospitalListResponse>> GetAllAsync()
+    public async Task<PagedResponse<HospitalListResponse>> GetAllAsync(
+    HospitalFilterRequest request)
     {
         using var connection = _db.CreateConnection();
 
-        const string sql = @"
+        var whereClause = "WHERE IsDeleted = 0";
+
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            whereClause += @" AND (
+                            Name LIKE @Search
+                            OR Code LIKE @Search
+                            OR Email LIKE @Search
+                         )";
+        }
+
+        if (request.IsActive.HasValue)
+        {
+            whereClause += " AND IsActive = @IsActive";
+        }
+
+        var parameters = new
+        {
+            Search = $"%{request.Search}%",
+            request.IsActive
+        };
+
+        // Total Records
+        var countSql = $@"
+        SELECT COUNT(*)
+        FROM Hospitals
+        {whereClause};
+    ";
+
+        var totalRecords = await connection.ExecuteScalarAsync<int>(
+            countSql,
+            parameters);
+
+        // Data
+        var sql = $@"
 SELECT
-    Id            AS HospitalId,
+    Id AS HospitalId,
     Code,
     Name,
     Email,
@@ -167,12 +204,30 @@ SELECT
     IsActive,
     CreatedAt
 FROM Hospitals
-WHERE IsDeleted = 0
-ORDER BY CreatedAt DESC;";
+{whereClause}
+ORDER BY CreatedAt DESC
+LIMIT @PageSize OFFSET @Offset;
+";
 
-        return await connection.QueryAsync<HospitalListResponse>(sql);
+        var hospitals = await connection.QueryAsync<HospitalListResponse>(
+            sql,
+            new
+            {
+                Search = $"%{request.Search}%",
+                request.IsActive,
+                Offset = (request.Page - 1) * request.PageSize,
+                PageSize = request.PageSize
+            });
+
+        return new PagedResponse<HospitalListResponse>
+        {
+            Items = hospitals.ToList(),
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalRecords = totalRecords,
+            TotalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize)
+        };
     }
-
     public async Task<Hospital?> GetByIdAsync(Guid id)
     {
         using var connection = _db.CreateConnection();

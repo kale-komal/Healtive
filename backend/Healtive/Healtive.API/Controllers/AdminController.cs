@@ -2,9 +2,12 @@
 using Healtive.Application.DTOs.Subscription;
 using Healtive.Application.DTOs.SubscriptionPlan;
 using Healtive.Application.Interfaces;
+using Healtive.Infrastructure.Repositories.Hospitals;
 using Healtive.Infrastructure.Services.HospitalSubscriptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Healtive.Application.DTOs.Common;
+
 
 
 namespace Healtive.API.Controllers;
@@ -55,9 +58,10 @@ public class AdminController : ControllerBase
     }
 
     [HttpGet("hospitals")]
-    public async Task<IActionResult> GetHospitals()
+    public async Task<IActionResult> GetHospitals(
+    [FromQuery] HospitalFilterRequest request)
     {
-        var result = await _hospitalService.GetAllAsync();
+        var result = await _hospitalService.GetAllAsync(request);
 
         return Ok(result);
     }

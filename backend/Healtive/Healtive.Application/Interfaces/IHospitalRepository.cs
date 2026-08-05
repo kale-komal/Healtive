@@ -1,5 +1,7 @@
 ﻿using Healtive.Application.DTOs.Hospital;
 using Healtive.Core.Entities;
+using Healtive.Application.DTOs.Common;
+
 
 namespace Healtive.Application.Interfaces;
 
@@ -9,8 +11,8 @@ public interface IHospitalRepository
 
     Task CreateAsync(Hospital hospital);
 
-    Task<IEnumerable<HospitalListResponse>> GetAllAsync();
-
+    Task<PagedResponse<HospitalListResponse>> GetAllAsync(
+    HospitalFilterRequest request);
     Task<Hospital?> GetByIdAsync(Guid id);
 
     Task UpdateAsync(Hospital hospital);
