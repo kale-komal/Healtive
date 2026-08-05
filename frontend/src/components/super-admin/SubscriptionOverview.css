@@ -1,0 +1,48 @@
+.subscription-overview{
+
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+
+}
+
+.overview-item{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding-bottom:18px;
+
+    border-bottom:1px solid #edf1f7;
+
+}
+
+.overview-item:last-child{
+
+    border-bottom:none;
+    padding-bottom:0;
+
+}
+
+.overview-item h4{
+
+    margin:0;
+    font-size:16px;
+    color:#111827;
+
+}
+
+.overview-item span{
+
+    font-size:13px;
+    color:#64748b;
+
+}
+
+.overview-item strong{
+
+    font-size:28px;
+    color:#2D7EF9;
+
+}

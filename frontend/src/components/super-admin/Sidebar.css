@@ -1,12 +1,23 @@
 .admin-sidebar{
-    width:270px;
-    background:#ffffff;
-    border-right:1px solid #edf0f4;
-    display:flex;
-    flex-direction:column;
-    padding:24px;
-}
+    position: fixed;
+    top: 0;
+    left: 0;
 
+    width: 270px;
+    height: 100vh;
+
+    background: #ffffff;
+    border-right: 1px solid #edf0f4;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 24px;
+
+    overflow-y: auto;
+
+    z-index: 1000;
+}
 .sidebar-logo{
     margin-bottom:40px;
 }
