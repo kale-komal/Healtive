@@ -37,4 +37,5 @@ public interface IHospitalRepository
     Task ActivateAsync(Guid id);
 
     Task DeactivateAsync(Guid id);
+    Task<string?> GetLastHospitalCodeAsync();
 }

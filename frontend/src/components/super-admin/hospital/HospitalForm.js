@@ -17,7 +17,6 @@ export default function HospitalForm() {
     const [formData, setFormData] = useState({
 
         name: "",
-        code: "",
         hospitalType: "",
         licenseNumber: "",
         gstNumber: "",
@@ -58,13 +57,7 @@ export default function HospitalForm() {
 
         }
 
-        if (!formData.code.trim()) {
-
-            toast.error("Hospital Code is required.");
-
-            return;
-
-        }
+        
 
         if (!formData.hospitalType) {
 
@@ -167,13 +160,10 @@ export default function HospitalForm() {
                             </label>
 
                             <input
-                                type="text"
-                                className="form-control"
-                                name="code"
-                                value={formData.code}
-                                onChange={handleChange}
-                                placeholder="Enter hospital code"
-                            />
+    className="form-control"
+    value="Auto Generated"
+    readOnly
+/>
 
                         </div>
 

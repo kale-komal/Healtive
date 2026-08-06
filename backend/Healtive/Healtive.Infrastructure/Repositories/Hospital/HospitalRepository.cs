@@ -486,4 +486,17 @@ AND IsDeleted = 0;";
             UpdatedAt = DateTime.UtcNow
         });
     }
+
+    public async Task<string?> GetLastHospitalCodeAsync()
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+SELECT Code
+FROM Hospitals
+ORDER BY CreatedAt DESC
+LIMIT 1;";
+
+        return await connection.QueryFirstOrDefaultAsync<string>(sql);
+    }
 }

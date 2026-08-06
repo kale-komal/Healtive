@@ -21,11 +21,26 @@ public class HospitalService : IHospitalService
     public async Task<ApiResponse<HospitalResponse>> CreateAsync(
     CreateHospitalRequest request)
     {
-        if (await _hospitalRepository.ExistsByCodeAsync(request.Code))
+        var lastCode = await _hospitalRepository.GetLastHospitalCodeAsync();
+
+        string hospitalCode;
+
+        if (string.IsNullOrEmpty(lastCode))
         {
-            return ApiResponse<HospitalResponse>.FailureResponse(
-                "Hospital code already exists.");
+            hospitalCode = "HSP000001";
         }
+        else
+        {
+            var number = int.Parse(lastCode.Replace("HSP", ""));
+
+            hospitalCode = $"HSP{(number + 1):D6}";
+        }
+
+        //if (await _hospitalRepository.ExistsByCodeAsync(request.Code))
+        //{
+        //    return ApiResponse<HospitalResponse>.FailureResponse(
+        //        "Hospital code already exists.");
+        //}
 
         if (await _hospitalRepository.ExistsByEmailAsync(request.Email))
         {
@@ -44,7 +59,7 @@ public class HospitalService : IHospitalService
             Id = Guid.NewGuid(),
 
             Name = request.Name,
-            Code = request.Code,
+            Code = hospitalCode,
 
             LicenseNumber = request.LicenseNumber,
             GSTNumber = request.GSTNumber,
@@ -71,12 +86,13 @@ public class HospitalService : IHospitalService
         };
         // Save Hospital
         await _hospitalRepository.CreateAsync(hospital);
+        Console.WriteLine("Hospital Saved");
 
         // Generate Hospital Admin Login
         var username = request.PhoneNumber;
 
-        var temporaryPassword =
-            "Hosp@" + Random.Shared.Next(1000, 9999);
+        // Default password (Development)
+        var temporaryPassword = "Hosp@123";
 
         var passwordHash =
             _passwordHasher.HashPassword(temporaryPassword);
@@ -95,7 +111,7 @@ public class HospitalService : IHospitalService
         };
 
         await _hospitalRepository.CreateRoleAsync(role);
-
+        Console.WriteLine("Role Saved");
         // Create Hospital Admin User
         var user = new User
         {
@@ -125,7 +141,7 @@ public class HospitalService : IHospitalService
         };
 
         await _hospitalRepository.CreateUserAsync(user);
-
+        Console.WriteLine("User Saved");
         // Assign Role
         await _hospitalRepository.AssignRoleAsync(new UserRole
         {
@@ -133,6 +149,7 @@ public class HospitalService : IHospitalService
             RoleId = role.Id,
             AssignedAt = DateTime.UtcNow
         });
+        Console.WriteLine("Role Assigned");
         var response = new HospitalResponse
         {
             HospitalId = hospital.Id,
