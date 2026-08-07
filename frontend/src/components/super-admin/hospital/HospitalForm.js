@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-
+import states from "@/data/states";
+import { useState, useEffect } from "react";
 import hospitalService from "@/services/hospital/hospitalService";
 
 import "./HospitalForm.css";
 
-export default function HospitalForm() {
+export default function HospitalForm({
+
+    initialData = null,
+
+    isEdit = false,
+
+}) {
 
     const router = useRouter();
 
@@ -16,21 +22,44 @@ export default function HospitalForm() {
 
     const [formData, setFormData] = useState({
 
-        name: "",
-        hospitalType: "",
-        licenseNumber: "",
-        gstNumber: "",
-        email: "",
-        phoneNumber: "",
-        website: "",
-        address: "",
-        city: "",
-        state: "",
-        country: "India",
-        postalCode: "",
+        name: initialData?.name || "",
+        code: initialData?.code || "",
+        hospitalType: initialData?.hospitalType || "",
+        licenseNumber: initialData?.licenseNumber || "",
+        gstNumber: initialData?.gstNumber || "",
+        email: initialData?.email || "",
+        phoneNumber: initialData?.phoneNumber || "",
+        website: initialData?.website || "",
+        address: initialData?.address || "",
+        city: initialData?.city || "",
+        state: initialData?.state || "",
+        country: initialData?.country || "India",
+        postalCode: initialData?.postalCode || "",
 
     });
+    useEffect(() => {
 
+        if (!initialData) return;
+
+        setFormData({
+
+            name: initialData.name || "",
+            code: initialData.code || "",
+            hospitalType: initialData.hospitalType || "",
+            licenseNumber: initialData.licenseNumber || "",
+            gstNumber: initialData.gstNumber || "",
+            email: initialData.email || "",
+            phoneNumber: initialData.phoneNumber || "",
+            website: initialData.website || "",
+            address: initialData.address || "",
+            city: initialData.city || "",
+            state: initialData.state || "",
+            country: initialData.country || "India",
+            postalCode: initialData.postalCode || "",
+
+        });
+
+    }, [initialData]);
     const handleChange = (e) => {
 
         const { name, value } = e.target;
@@ -57,7 +86,7 @@ export default function HospitalForm() {
 
         }
 
-        
+
 
         if (!formData.hospitalType) {
 
@@ -87,12 +116,35 @@ export default function HospitalForm() {
 
             setLoading(true);
 
-            const response = await hospitalService.createHospital(formData);
+            let response;
 
+            if (isEdit) {
+
+                response = await hospitalService.updateHospital(
+
+                    initialData.hospitalId,
+
+                    formData
+
+                );
+
+            }
+            else {
+
+                response = await hospitalService.createHospital(formData);
+
+            }
             if (response.success) {
 
-                toast.success(response.message);
+                toast.success(
 
+                    isEdit
+
+                        ? "Hospital updated successfully."
+
+                        : "Hospital created successfully."
+
+                );
                 router.push("/super-admin/hospitals");
 
             } else {
@@ -160,10 +212,10 @@ export default function HospitalForm() {
                             </label>
 
                             <input
-    className="form-control"
-    value="Auto Generated"
-    readOnly
-/>
+                                className="form-control"
+                                value={isEdit ? formData.code : "Auto Generated"}
+                                readOnly
+                            />
 
                         </div>
 
@@ -351,13 +403,20 @@ export default function HospitalForm() {
 
                             </label>
 
-                            <input
-                                type="text"
-                                className="form-control"
+                            <select
+                                className="form-select"
                                 name="state"
                                 value={formData.state}
                                 onChange={handleChange}
-                            />
+                            >
+                                <option value="">Select State</option>
+
+                                {states.map((state) => (
+                                    <option key={state} value={state}>
+                                        {state}
+                                    </option>
+                                ))}
+                            </select>
 
                         </div>
 
@@ -420,7 +479,11 @@ export default function HospitalForm() {
                         disabled={loading}
                     >
 
-                        {loading ? "Saving..." : "Save Hospital"}
+                        {
+                            loading
+                                ? (isEdit ? "Updating..." : "Saving...")
+                                : (isEdit ? "Update Hospital" : "Save Hospital")
+                        }
 
                     </button>
 

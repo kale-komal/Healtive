@@ -9,7 +9,7 @@ import {
     Trash2,
     Plus,
 } from "lucide-react";
-
+import { toast } from "react-toastify";
 import hospitalService from "@/services/hospital/hospitalService";
 import HospitalFilter from "./HospitalFilter";
 import Pagination from "@/components/common/Pagination";
@@ -79,6 +79,46 @@ export default function HospitalTable() {
         }
 
     };
+
+    const handleDelete = async (hospitalId) => {
+
+    const confirmed = window.confirm(
+        "Are you sure you want to delete this hospital?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+
+        const response =
+            await hospitalService.deleteHospital(hospitalId);
+
+        if (response.success) {
+
+    toast.success(response.message);
+
+    setHospitals(prev =>
+        prev.filter(h => h.hospitalId !== hospitalId)
+    );
+
+}
+        else {
+
+            toast.error(response.message);
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        toast.error("Something went wrong.");
+
+    }
+
+};
+
 
     if (loading) {
 
@@ -275,7 +315,8 @@ export default function HospitalTable() {
                                                         </Link>
 
                                                         <button
-                                                            className="action-btn delete"
+                                                            className="btn btn-sm btn-danger"
+                                                            onClick={() => handleDelete(hospital.hospitalId)}
                                                         >
 
                                                             <Trash2 size={16} />

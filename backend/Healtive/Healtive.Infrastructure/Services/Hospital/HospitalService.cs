@@ -153,12 +153,32 @@ public class HospitalService : IHospitalService
         var response = new HospitalResponse
         {
             HospitalId = hospital.Id,
+
+            Name = hospital.Name,
             Code = hospital.Code,
-            HospitalName = hospital.Name,
+
+            LicenseNumber = hospital.LicenseNumber,
+            GSTNumber = hospital.GSTNumber,
+
+            HospitalType = hospital.HospitalType,
+
+            Email = hospital.Email,
+            PhoneNumber = hospital.PhoneNumber,
+            Website = hospital.Website,
+
+            Address = hospital.Address,
+            City = hospital.City,
+            State = hospital.State,
+            Country = hospital.Country,
+            PostalCode = hospital.PostalCode,
+
+            TimeZone = hospital.TimeZone,
+            Currency = hospital.Currency,
+
+            IsActive = hospital.IsActive,
 
             AdminUsername = username,
             TemporaryPassword = temporaryPassword,
-
             PlanName = string.Empty
         };
 
@@ -205,15 +225,36 @@ public class HospitalService : IHospitalService
         }
 
         var response = new HospitalResponse
-        {
-            HospitalId = hospital.Id,
-            Code = hospital.Code,
-            HospitalName = hospital.Name,
+{
+    HospitalId = hospital.Id,
 
-            AdminUsername = string.Empty,
-            TemporaryPassword = string.Empty,
-            PlanName = string.Empty
-        };
+    Name = hospital.Name,
+    Code = hospital.Code,
+
+    LicenseNumber = hospital.LicenseNumber,
+    GSTNumber = hospital.GSTNumber,
+
+    HospitalType = hospital.HospitalType,
+
+    Email = hospital.Email,
+    PhoneNumber = hospital.PhoneNumber,
+    Website = hospital.Website,
+
+    Address = hospital.Address,
+    City = hospital.City,
+    State = hospital.State,
+    Country = hospital.Country,
+    PostalCode = hospital.PostalCode,
+
+    TimeZone = hospital.TimeZone,
+    Currency = hospital.Currency,
+
+    IsActive = hospital.IsActive,
+
+    AdminUsername = string.Empty,
+    TemporaryPassword = string.Empty,
+    PlanName = string.Empty
+};
 
         return ApiResponse<HospitalResponse>.SuccessResponse(
             response,
@@ -232,11 +273,6 @@ public class HospitalService : IHospitalService
                 "Hospital not found.");
         }
 
-        if (await _hospitalRepository.ExistsByCodeAsync(id, request.Code))
-        {
-            return ApiResponse<string>.FailureResponse(
-                "Hospital code already exists.");
-        }
 
         if (await _hospitalRepository.ExistsByEmailAsync(id, request.Email))
         {
@@ -251,7 +287,6 @@ public class HospitalService : IHospitalService
         }
 
         hospital.Name = request.Name;
-        hospital.Code = request.Code;
         hospital.LicenseNumber = request.LicenseNumber;
         hospital.GSTNumber = request.GSTNumber;
         hospital.HospitalType = request.HospitalType;
