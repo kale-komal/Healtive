@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import {
     Eye,
     Pencil,
     Trash2,
     Plus,
+    Power,
 } from "lucide-react";
-import { toast } from "react-toastify";
 import hospitalService from "@/services/hospital/hospitalService";
 import HospitalFilter from "./HospitalFilter";
 import Pagination from "@/components/common/Pagination";
@@ -39,7 +40,78 @@ export default function HospitalTable() {
 
     }, [page, search, status]);
 
+    const handleActivate = async (hospitalId) => {
 
+        const confirmed = window.confirm(
+            "Are you sure you want to activate this hospital?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+
+            const response =
+                await hospitalService.activateHospital(hospitalId);
+
+            if (response.success) {
+
+                toast.success(response.message);
+
+                await loadHospitals();
+
+            }
+            else {
+
+                toast.error(response.message);
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            toast.error("Something went wrong.");
+
+        }
+
+    };
+    const handleDeactivate = async (hospitalId) => {
+
+        const confirmed = window.confirm(
+            "Are you sure you want to deactivate this hospital?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+
+            const response =
+                await hospitalService.deactivateHospital(hospitalId);
+
+            if (response.success) {
+
+                toast.success(response.message);
+
+                await loadHospitals();
+
+            }
+            else {
+
+                toast.error(response.message);
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            toast.error("Something went wrong.");
+
+        }
+
+    };
     const loadHospitals = async () => {
 
         try {
@@ -79,45 +151,111 @@ export default function HospitalTable() {
         }
 
     };
+    const handleStatusChange = async (hospital) => {
 
-    const handleDelete = async (hospitalId) => {
+        const isActive = hospital.isActive;
 
-    const confirmed = window.confirm(
-        "Are you sure you want to delete this hospital?"
-    );
+        const result = await Swal.fire({
 
-    if (!confirmed) return;
+            title: isActive
+                ? "Deactivate Hospital?"
+                : "Activate Hospital?",
 
-    try {
+            text: isActive
+                ? "The hospital will become inactive."
+                : "The hospital will become active.",
 
-        const response =
-            await hospitalService.deleteHospital(hospitalId);
+            icon: "warning",
 
-        if (response.success) {
+            showCancelButton: true,
 
-    toast.success(response.message);
+            confirmButtonText: isActive
+                ? "Yes, Deactivate"
+                : "Yes, Activate",
 
-    setHospitals(prev =>
-        prev.filter(h => h.hospitalId !== hospitalId)
-    );
+            cancelButtonText: "Cancel",
 
-}
-        else {
+            reverseButtons: true,
 
-            toast.error(response.message);
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+
+            const response = isActive
+
+                ? await hospitalService.deactivateHospital(
+                    hospital.hospitalId
+                )
+
+                : await hospitalService.activateHospital(
+                    hospital.hospitalId
+                );
+
+            if (response.success) {
+
+                toast.success(response.message);
+
+                loadHospitals();
+
+            } else {
+
+                toast.error(response.message);
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            toast.error("Something went wrong.");
 
         }
 
-    }
-    catch (error) {
+    };
+    const handleDelete = async (hospitalId) => {
 
-        console.error(error);
+        const result = await Swal.fire({
+            title: "Delete Hospital?",
+            text: "This hospital will be deleted.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Delete",
+            cancelButtonText: "Cancel",
+            reverseButtons: true,
+        });
 
-        toast.error("Something went wrong.");
+        if (!result.isConfirmed) return;
 
-    }
+        try {
 
-};
+            const response =
+                await hospitalService.deleteHospital(hospitalId);
+
+            if (response.success) {
+
+                toast.success(response.message);
+
+                loadHospitals();
+
+            } else {
+
+                toast.error(response.message);
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            toast.error("Something went wrong.");
+
+        }
+
+    };
 
 
     if (loading) {
@@ -313,7 +451,17 @@ export default function HospitalTable() {
                                                             <Pencil size={16} />
 
                                                         </Link>
-
+                                                        <button
+                                                            className={
+                                                                hospital.isActive
+                                                                    ? "action-btn deactivate"
+                                                                    : "action-btn activate"
+                                                            }
+                                                            onClick={() => handleStatusChange(hospital)}
+                                                            title={hospital.isActive ? "Deactivate" : "Activate"}
+                                                        >
+                                                            <Power size={16} />
+                                                        </button>
                                                         <button
                                                             className="btn btn-sm btn-danger"
                                                             onClick={() => handleDelete(hospital.hospitalId)}

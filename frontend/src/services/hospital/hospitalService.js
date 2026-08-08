@@ -61,12 +61,36 @@ const deleteHospital = async (hospitalId) => {
 
 };
 
+// Activate Hospital
+const activateHospital = async (hospitalId) => {
+
+    const response = await apiClient.patch(
+        `/admin/hospitals/${hospitalId}/activate`
+    );
+
+    return response.data;
+};
+
+const deactivateHospital = async (hospitalId) => {
+
+    const response = await apiClient.patch(
+        `/admin/hospitals/${hospitalId}/deactivate`
+    );
+
+    return response.data;
+};
+
+
 const hospitalService = {
     getHospitals,
     getHospitalById,
     createHospital,
     updateHospital,
     deleteHospital,
+    activateHospital,
+    deactivateHospital,
 };
+
+
 
 export default hospitalService;
