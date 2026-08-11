@@ -1,21 +1,22 @@
-using Healtive.Infrastructure.Configuration;
 using Healtive.Application.Interfaces;
+using Healtive.Infrastructure.Configuration;
 using Healtive.Infrastructure.Data;
 using Healtive.Infrastructure.Repositories.Auth;
+using Healtive.Infrastructure.Repositories.Dashboard;
+using Healtive.Infrastructure.Repositories.Hospitals;
+using Healtive.Infrastructure.Repositories.HospitalSubscriptions;
+using Healtive.Infrastructure.Repositories.SubscriptionPlans;
 using Healtive.Infrastructure.Seed;
 using Healtive.Infrastructure.Services.Auth;
+using Healtive.Infrastructure.Services.Dashboard;
+using Healtive.Infrastructure.Services.Hospitals;
+using Healtive.Infrastructure.Services.HospitalSubscriptions;
+using Healtive.Infrastructure.Services.SubscriptionPlans;
+using Healtive.Infrastructure.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Healtive.Infrastructure.Repositories.Hospitals;
-using Healtive.Infrastructure.Services.Hospitals;
-using Healtive.Infrastructure.Repositories.SubscriptionPlans;
-using Healtive.Infrastructure.Services.SubscriptionPlans;
-using Healtive.Infrastructure.Repositories.HospitalSubscriptions;
-using Healtive.Infrastructure.Services.HospitalSubscriptions;
-using Healtive.Infrastructure.Services.Dashboard;
-using Healtive.Infrastructure.Repositories.Dashboard;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -82,6 +83,8 @@ builder.Services.AddScoped<IHospitalSubscriptionRepository, HospitalSubscription
 builder.Services.AddScoped<IHospitalSubscriptionService, HospitalSubscriptionService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 var app = builder.Build();

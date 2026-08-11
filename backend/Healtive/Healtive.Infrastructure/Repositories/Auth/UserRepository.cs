@@ -2,6 +2,7 @@
 using Healtive.Application.Interfaces;
 using Healtive.Core.Entities;
 using Healtive.Infrastructure.Data;
+using Healtive.Application.DTOs.User;
 
 namespace Healtive.Infrastructure.Repositories.Auth;
 
@@ -110,5 +111,44 @@ public class UserRepository : IUserRepository
                 UserId = userId,
                 PasswordHash = passwordHash
             });
+    }
+
+    public async Task<IEnumerable<UserListResponse>> GetAllAsync()
+    {
+        using var connection = _dbConnectionFactory.CreateConnection();
+
+        const string sql = @"
+        SELECT
+            u.Id,
+            u.HospitalId,
+            h.Name AS HospitalName,
+
+            CONCAT(u.FirstName, ' ', u.LastName) AS Name,
+
+            u.Email,
+            u.MobileNumber,
+
+            r.Name AS RoleName,
+
+            u.IsActive,
+            u.CreatedAt
+
+        FROM Users u
+
+        INNER JOIN Hospitals h
+            ON u.HospitalId = h.Id
+
+        LEFT JOIN UserRoles ur
+            ON u.Id = ur.UserId
+
+        LEFT JOIN Roles r
+            ON ur.RoleId = r.Id
+
+        WHERE u.IsDeleted = FALSE
+
+        ORDER BY u.CreatedAt DESC;
+    ";
+
+        return await connection.QueryAsync<UserListResponse>(sql);
     }
 }

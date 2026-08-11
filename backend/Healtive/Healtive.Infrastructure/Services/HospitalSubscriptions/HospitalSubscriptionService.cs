@@ -57,6 +57,14 @@ public class HospitalSubscriptionService : IHospitalSubscriptionService
     public async Task<ApiResponse<HospitalSubscriptionResponse>> CreateAsync(
         CreateHospitalSubscriptionRequest request)
     {
+
+        if (await _repository.HasActiveSubscriptionAsync(request.HospitalId))
+        {
+            return ApiResponse<HospitalSubscriptionResponse>
+                .FailureResponse(
+                    "This hospital already has an active subscription.");
+        }
+
         var subscription = new HospitalSubscription
         {
             Id = Guid.NewGuid(),

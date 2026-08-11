@@ -21,17 +21,20 @@ public class AdminController : ControllerBase
     private readonly ISubscriptionPlanService _subscriptionPlanService;
     private readonly IHospitalSubscriptionService _hospitalSubscriptionService;
     private readonly IDashboardService _dashboardService;
+    private readonly IUserService _userService;
 
     public AdminController(
         IHospitalService hospitalService,
         ISubscriptionPlanService subscriptionPlanService,
         IHospitalSubscriptionService hospitalSubscriptionService,
-        IDashboardService dashboardService)
+        IDashboardService dashboardService,
+        IUserService userService)
     {
         _hospitalService = hospitalService;
         _subscriptionPlanService = subscriptionPlanService;
         _hospitalSubscriptionService = hospitalSubscriptionService;
         _dashboardService = dashboardService;
+        _userService = userService;
     }
 
     [HttpPost("hospitals")]
@@ -257,6 +260,29 @@ public class AdminController : ControllerBase
     public async Task<IActionResult> GetDashboard()
     {
         var result = await _dashboardService.GetDashboardAsync();
+
+        return Ok(result);
+    }
+
+    // =============================
+    // Users
+    // =============================
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetUsers()
+    {
+        var result = await _userService.GetAllAsync();
+
+        return Ok(result);
+    }
+
+    [HttpGet("users/{id:guid}")]
+    public async Task<IActionResult> GetUser(Guid id)
+    {
+        var result = await _userService.GetByIdAsync(id);
+
+        if (!result.Success)
+            return NotFound(result);
 
         return Ok(result);
     }

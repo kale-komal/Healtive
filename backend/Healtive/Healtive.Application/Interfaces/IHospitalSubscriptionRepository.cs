@@ -14,4 +14,5 @@ public interface IHospitalSubscriptionRepository
     Task UpdateAsync(HospitalSubscription subscription);
 
     Task DeleteAsync(Guid id);
+    Task<bool> HasActiveSubscriptionAsync(Guid hospitalId);
 }

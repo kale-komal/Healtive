@@ -60,6 +60,7 @@ WHERE Id=@Id;";
     {
         using var connection = _db.CreateConnection();
 
+
         const string sql = @"
 INSERT INTO HospitalSubscriptions
 (
@@ -126,5 +127,25 @@ WHERE Id=@Id;";
             {
                 Id = id
             });
+    }
+    public async Task<bool> HasActiveSubscriptionAsync(Guid hospitalId)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+        SELECT COUNT(1)
+        FROM HospitalSubscriptions
+        WHERE HospitalId = @HospitalId
+        AND IsActive = 1;
+    ";
+
+        var count = await connection.ExecuteScalarAsync<int>(
+            sql,
+            new
+            {
+                HospitalId = hospitalId
+            });
+
+        return count > 0;
     }
 }

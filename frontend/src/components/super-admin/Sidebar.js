@@ -38,7 +38,7 @@ const menuItems = [
     },
     {
         title: "Plans",
-        href: "/super-admin/plans",
+        href: "/super-admin/subscription-plans",
         icon: BadgeIndianRupee,
     },
     {

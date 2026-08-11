@@ -1,0 +1,201 @@
+/* =========================================
+   User Table
+========================================= */
+
+.table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================================
+   Header
+========================================= */
+
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.table-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+
+/* =========================================
+   Loading
+========================================= */
+
+.table-loading {
+    padding: 50px 20px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+
+/* =========================================
+   Empty State
+========================================= */
+
+.empty-state {
+    padding: 50px 20px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+
+/* =========================================
+   Table
+========================================= */
+
+.user-table {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.user-table thead th {
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+
+.user-table tbody td {
+    padding: 15px 16px;
+    font-size: 14px;
+    color: #475569;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.user-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.user-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.user-table strong {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+
+/* =========================================
+   Status Badges
+========================================= */
+
+.badge-active,
+.badge-inactive {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.badge-inactive {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =========================================
+   Action Buttons
+========================================= */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.action-btn {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 7px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn.view {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.action-btn.view:hover {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+
+/* =========================================
+   Responsive
+========================================= */
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+
+/* =========================================
+   Mobile
+========================================= */
+
+@media (max-width: 768px) {
+
+    .table-card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    .table-header h3 {
+        font-size: 18px;
+    }
+
+    .user-table thead th,
+    .user-table tbody td {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+}
