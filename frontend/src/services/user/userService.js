@@ -19,12 +19,34 @@ const getUserById = async (id) => {
     return response.data;
 };
 
+const getProfile = async () => {
+
+    const response = await apiClient.get(
+        "/admin/profile"
+    );
+
+    return response.data;
+};
+
+const changePassword = async (data) => {
+
+    const response = await apiClient.patch(
+        "/Auth/change-password",
+        data
+    );
+
+    return response.data;
+};
 
 const userService = {
 
     getUsers,
 
     getUserById,
+
+    getProfile,
+
+    changePassword,
 
 };
 

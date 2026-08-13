@@ -99,10 +99,9 @@ public class UserRepository : IUserRepository
         using var connection = _dbConnectionFactory.CreateConnection();
 
         const string sql = @"
-        UPDATE Users
-        SET PasswordHash = @PasswordHash,
-            LastPasswordChangedAt = CURRENT_TIMESTAMP
-        WHERE Id = @UserId;";
+    UPDATE Users
+    SET PasswordHash = @PasswordHash
+    WHERE Id = @UserId;";
 
         await connection.ExecuteAsync(
             sql,

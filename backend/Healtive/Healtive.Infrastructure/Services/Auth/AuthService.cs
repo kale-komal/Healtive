@@ -135,4 +135,89 @@ public class AuthService : IAuthService
     {
         throw new NotImplementedException();
     }
+
+    public async Task<ApiResponse<bool>> ChangePasswordAsync(
+    Guid userId,
+    ChangePasswordRequest request)
+    {
+        // 1. Validate request
+        if (string.IsNullOrWhiteSpace(request.CurrentPassword))
+        {
+            return ApiResponse<bool>.FailureResponse(
+                "Current password is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.NewPassword))
+        {
+            return ApiResponse<bool>.FailureResponse(
+                "New password is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.ConfirmPassword))
+        {
+            return ApiResponse<bool>.FailureResponse(
+                "Confirm password is required.");
+        }
+
+
+        // 2. Check new password confirmation
+        if (request.NewPassword != request.ConfirmPassword)
+        {
+            return ApiResponse<bool>.FailureResponse(
+                "New password and confirm password do not match.");
+        }
+
+
+        // 3. Get current user
+        var user = await _userRepository.GetByIdAsync(userId);
+
+        if (user is null)
+        {
+            return ApiResponse<bool>.FailureResponse(
+                "User not found.");
+        }
+
+
+        // 4. Verify current password
+        var isCurrentPasswordValid =
+            _passwordHasher.VerifyPassword(
+                request.CurrentPassword,
+                user.PasswordHash);
+
+        if (!isCurrentPasswordValid)
+        {
+            return ApiResponse<bool>.FailureResponse(
+                "Current password is incorrect.");
+        }
+
+
+        // 5. Don't allow same password
+        var isSamePassword =
+            _passwordHasher.VerifyPassword(
+                request.NewPassword,
+                user.PasswordHash);
+
+        if (isSamePassword)
+        {
+            return ApiResponse<bool>.FailureResponse(
+                "New password must be different from current password.");
+        }
+
+
+        // 6. Hash new password
+        var newPasswordHash =
+            _passwordHasher.HashPassword(
+                request.NewPassword);
+
+
+        // 7. Update password
+        await _userRepository.ChangePasswordAsync(
+            userId,
+            newPasswordHash);
+
+
+        return ApiResponse<bool>.SuccessResponse(
+            true,
+            "Password changed successfully.");
+    }
 }

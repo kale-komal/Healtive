@@ -62,4 +62,41 @@ public class UserService : IUserService
                 "User fetched successfully."
             );
     }
+
+
+    public async Task<ApiResponse<ProfileResponse>> GetProfileAsync(Guid userId)
+    {
+        var user = await _userRepository.GetByIdAsync(userId);
+
+        if (user == null)
+        {
+            return ApiResponse<ProfileResponse>
+                .FailureResponse("Profile not found.");
+        }
+
+        var roles = await _userRepository.GetUserRolesAsync(userId);
+
+        var response = new ProfileResponse
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            MobileNumber = user.MobileNumber,
+            EmployeeCode = user.EmployeeCode,
+            ProfileImageUrl = user.ProfileImageUrl,
+            Roles = roles.ToList(),
+            IsEmailVerified = user.IsEmailVerified,
+            IsMobileVerified = user.IsMobileVerified,
+            IsActive = user.IsActive,
+            LastLoginAt = user.LastLoginAt,
+            CreatedAt = user.CreatedAt
+        };
+
+        return ApiResponse<ProfileResponse>
+            .SuccessResponse(
+                response,
+                "Profile fetched successfully."
+            );
+    }
 }

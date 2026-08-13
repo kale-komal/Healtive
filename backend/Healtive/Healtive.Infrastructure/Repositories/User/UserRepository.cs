@@ -100,25 +100,22 @@ public class UserRepository : IUserRepository
 
 
     public async Task ChangePasswordAsync(
-        Guid userId,
-        string passwordHash)
+    Guid userId,
+    string passwordHash)
     {
         using var connection = _db.CreateConnection();
 
         const string sql = @"
-            UPDATE Users
-            SET PasswordHash = @PasswordHash,
-                UpdatedAt = @UpdatedAt
-            WHERE Id = @Id;
-        ";
+    UPDATE Users
+    SET PasswordHash = @PasswordHash
+    WHERE Id = @UserId;";
 
         await connection.ExecuteAsync(
             sql,
             new
             {
-                Id = userId,
-                PasswordHash = passwordHash,
-                UpdatedAt = DateTime.UtcNow
+                UserId = userId,
+                PasswordHash = passwordHash
             });
     }
 

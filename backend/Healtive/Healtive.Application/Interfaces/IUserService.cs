@@ -8,4 +8,6 @@ public interface IUserService
     Task<ApiResponse<IEnumerable<UserListResponse>>> GetAllAsync();
 
     Task<ApiResponse<UserViewResponse>> GetByIdAsync(Guid id);
+
+    Task<ApiResponse<ProfileResponse>> GetProfileAsync(Guid userId);
 }

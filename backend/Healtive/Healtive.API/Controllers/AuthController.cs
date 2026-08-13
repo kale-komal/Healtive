@@ -1,6 +1,8 @@
 ﻿using Healtive.Application.DTOs.Auth;
 using Healtive.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Healtive.Application.DTOs.Common;
 
 namespace Healtive.API.Controllers;
 
@@ -27,5 +29,44 @@ public class AuthController : ControllerBase
         }
 
         return Ok(result);
+    }
+
+
+    [Authorize]
+    [HttpPatch("change-password")]
+    public async Task<IActionResult> ChangePassword(
+    [FromBody] ChangePasswordRequest request)
+    {
+        var userIdClaim =
+            User.FindFirst(
+                System.Security.Claims.ClaimTypes.NameIdentifier);
+
+        if (userIdClaim == null)
+        {
+            return Unauthorized(
+                ApiResponse<bool>.FailureResponse(
+                    "User authentication information not found."));
+        }
+
+        if (!Guid.TryParse(
+            userIdClaim.Value,
+            out var userId))
+        {
+            return Unauthorized(
+                ApiResponse<bool>.FailureResponse(
+                    "Invalid user ID."));
+        }
+
+        var response =
+            await _authService.ChangePasswordAsync(
+                userId,
+                request);
+
+        if (!response.Success)
+        {
+            return BadRequest(response);
+        }
+
+        return Ok(response);
     }
 }

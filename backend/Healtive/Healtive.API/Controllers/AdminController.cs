@@ -1,4 +1,5 @@
-﻿using Healtive.Application.DTOs.Hospital;
+﻿using Healtive.Application.DTOs.Common;
+using Healtive.Application.DTOs.Hospital;
 using Healtive.Application.DTOs.Subscription;
 using Healtive.Application.DTOs.SubscriptionPlan;
 using Healtive.Application.Interfaces;
@@ -6,7 +7,7 @@ using Healtive.Infrastructure.Repositories.Hospitals;
 using Healtive.Infrastructure.Services.HospitalSubscriptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Healtive.Application.DTOs.Common;
+using System.Security.Claims;
 
 
 
@@ -280,6 +281,26 @@ public class AdminController : ControllerBase
     public async Task<IActionResult> GetUser(Guid id)
     {
         var result = await _userService.GetByIdAsync(id);
+
+        if (!result.Success)
+            return NotFound(result);
+
+        return Ok(result);
+    }
+
+    [HttpGet("profile")]
+    public async Task<IActionResult> GetProfile()
+    {
+        var userIdClaim =
+            User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var result =
+            await _userService.GetProfileAsync(userId);
 
         if (!result.Success)
             return NotFound(result);
