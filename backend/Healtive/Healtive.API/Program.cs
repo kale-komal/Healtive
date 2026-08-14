@@ -2,12 +2,14 @@ using Healtive.Application.Interfaces;
 using Healtive.Infrastructure.Configuration;
 using Healtive.Infrastructure.Data;
 using Healtive.Infrastructure.Repositories.Auth;
+using Healtive.Infrastructure.Repositories.Branches;
 using Healtive.Infrastructure.Repositories.Dashboard;
 using Healtive.Infrastructure.Repositories.Hospitals;
 using Healtive.Infrastructure.Repositories.HospitalSubscriptions;
 using Healtive.Infrastructure.Repositories.SubscriptionPlans;
 using Healtive.Infrastructure.Seed;
 using Healtive.Infrastructure.Services.Auth;
+using Healtive.Infrastructure.Services.Branches;
 using Healtive.Infrastructure.Services.Dashboard;
 using Healtive.Infrastructure.Services.Hospitals;
 using Healtive.Infrastructure.Services.HospitalSubscriptions;
@@ -85,6 +87,10 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IBranchRepository, BranchRepository>();
+builder.Services.AddScoped<IBranchService, BranchService>();
 
 
 var app = builder.Build();

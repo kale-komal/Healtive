@@ -224,7 +224,7 @@ LIMIT @PageSize OFFSET @Offset;
             Items = hospitals.ToList(),
             Page = request.Page,
             PageSize = request.PageSize,
-            TotalRecords = totalRecords,
+            TotalCount = totalRecords,
             TotalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize)
         };
     }

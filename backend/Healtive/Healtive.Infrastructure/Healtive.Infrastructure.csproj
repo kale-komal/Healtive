@@ -36,5 +36,7 @@
     <ProjectReference Include="..\Healtive.Core\Healtive.Core.csproj" />
     <ProjectReference Include="..\Healtive.Shared\Healtive.Shared.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 </Project>
