@@ -43,7 +43,7 @@ export default function HospitalSubscriptionForm({
         trialEndsOn:
             initialData?.trialEndsOn
                 ? initialData.trialEndsOn.split("T")[0]
-                : "",
+                : null,
 
         amountPaid:
             initialData?.amountPaid ?? "",
@@ -130,7 +130,7 @@ export default function HospitalSubscriptionForm({
                 ...prev,
                 subscriptionPlanId: "",
                 endDate: "",
-                trialEndsOn: "",
+                trialEndsOn: null,
                 amountPaid: "",
             }));
 
@@ -165,7 +165,7 @@ export default function HospitalSubscriptionForm({
 
             trialEndsOn: selectedPlan.isTrial
                 ? formatDate(endDate)
-                : "",
+                : null,
 
         }));
 
