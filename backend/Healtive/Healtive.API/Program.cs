@@ -7,6 +7,7 @@ using Healtive.Infrastructure.Repositories.Dashboard;
 using Healtive.Infrastructure.Repositories.Departments;
 using Healtive.Infrastructure.Repositories.Hospitals;
 using Healtive.Infrastructure.Repositories.HospitalSubscriptions;
+using Healtive.Infrastructure.Repositories.Staff;
 using Healtive.Infrastructure.Repositories.SubscriptionPlans;
 using Healtive.Infrastructure.Seed;
 using Healtive.Infrastructure.Services.Auth;
@@ -15,6 +16,7 @@ using Healtive.Infrastructure.Services.Dashboard;
 using Healtive.Infrastructure.Services.Departments;
 using Healtive.Infrastructure.Services.Hospitals;
 using Healtive.Infrastructure.Services.HospitalSubscriptions;
+using Healtive.Infrastructure.Services.Staff;
 using Healtive.Infrastructure.Services.SubscriptionPlans;
 using Healtive.Infrastructure.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -95,6 +97,8 @@ builder.Services.AddScoped<IBranchRepository, BranchRepository>();
 builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+builder.Services.AddScoped<IStaffService, StaffService>();
 
 
 var app = builder.Build();
