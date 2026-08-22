@@ -1,16 +1,19 @@
 ﻿using Dapper;
 using Healtive.Application.DTOs.Doctor;
+using Healtive.Application.DTOs.DoctorSpecialization;
 using Healtive.Application.Interfaces;
 using Healtive.Core.Entities;
 using Healtive.Infrastructure.Data;
 
-namespace Healtive.Infrastructure.Repositories.Doctors;
+namespace Healtive.Infrastructure.Repositories.DoctorSpecializations;
 
-public class DoctorDepartmentRepository : IDoctorDepartmentRepository
+public class DoctorSpecializationMappingRepository
+    : IDoctorSpecializationMappingRepository
 {
     private readonly IDbConnectionFactory _db;
 
-    public DoctorDepartmentRepository(IDbConnectionFactory db)
+    public DoctorSpecializationMappingRepository(
+        IDbConnectionFactory db)
     {
         _db = db;
     }
@@ -56,16 +59,15 @@ AND IsDeleted = 0;";
             });
     }
 
-    public async Task<Department?> GetDepartmentAsync(
-        Guid hospitalId,
-        Guid departmentId)
+    public async Task<DoctorSpecialization?>
+        GetSpecializationAsync(
+            Guid specializationId)
     {
         using var connection = _db.CreateConnection();
 
         const string sql = @"
 SELECT
     Id,
-    HospitalId,
     Name,
     Code,
     Description,
@@ -73,59 +75,58 @@ SELECT
     CreatedAt,
     UpdatedAt,
     IsDeleted
-FROM Departments
-WHERE Id = @DepartmentId
-AND HospitalId = @HospitalId
+FROM DoctorSpecializations
+WHERE Id = @SpecializationId
 AND IsDeleted = 0;";
 
-        return await connection.QueryFirstOrDefaultAsync<Department>(
+        return await connection.QueryFirstOrDefaultAsync<
+            DoctorSpecialization>(
             sql,
             new
             {
-                DepartmentId = departmentId,
-                HospitalId = hospitalId
+                SpecializationId = specializationId
             });
     }
 
     public async Task<bool> MappingExistsAsync(
         Guid doctorId,
-        Guid departmentId)
+        Guid specializationId)
     {
         using var connection = _db.CreateConnection();
 
         const string sql = @"
 SELECT COUNT(*)
-FROM DoctorDepartments
+FROM DoctorSpecializationMappings
 WHERE DoctorId = @DoctorId
-AND DepartmentId = @DepartmentId;";
+AND SpecializationId = @SpecializationId;";
 
         var count = await connection.ExecuteScalarAsync<int>(
             sql,
             new
             {
                 DoctorId = doctorId,
-                DepartmentId = departmentId
+                SpecializationId = specializationId
             });
 
         return count > 0;
     }
 
     public async Task AssignAsync(
-        DoctorDepartment mapping)
+        DoctorSpecializationMapping mapping)
     {
         using var connection = _db.CreateConnection();
 
         const string sql = @"
-INSERT INTO DoctorDepartments
+INSERT INTO DoctorSpecializationMappings
 (
     DoctorId,
-    DepartmentId,
+    SpecializationId,
     CreatedAt
 )
 VALUES
 (
     @DoctorId,
-    @DepartmentId,
+    @SpecializationId,
     @CreatedAt
 );";
 
@@ -134,8 +135,8 @@ VALUES
             mapping);
     }
 
-    public async Task<IEnumerable<DoctorDepartmentResponse>>
-        GetDoctorDepartmentsAsync(
+    public async Task<IEnumerable<DoctorSpecializationMappingResponse>>
+        GetDoctorSpecializationsAsync(
             Guid hospitalId,
             Guid doctorId)
     {
@@ -143,19 +144,23 @@ VALUES
 
         const string sql = @"
 SELECT
-    dd.DoctorId,
-    dd.DepartmentId,
-    d.Name AS DepartmentName,
-    dd.CreatedAt
-FROM DoctorDepartments dd
-INNER JOIN Departments d
-    ON d.Id = dd.DepartmentId
-WHERE dd.DoctorId = @DoctorId
+    dsm.DoctorId,
+    dsm.SpecializationId,
+    ds.Name AS SpecializationName,
+    ds.Code AS SpecializationCode,
+    dsm.CreatedAt
+FROM DoctorSpecializationMappings dsm
+INNER JOIN DoctorSpecializations ds
+    ON ds.Id = dsm.SpecializationId
+INNER JOIN Doctors d
+    ON d.Id = dsm.DoctorId
+WHERE dsm.DoctorId = @DoctorId
 AND d.HospitalId = @HospitalId
-AND d.IsDeleted = 0
-ORDER BY d.Name;";
+AND ds.IsDeleted = 0
+ORDER BY ds.Name;";
 
-        return await connection.QueryAsync<DoctorDepartmentResponse>(
+        return await connection.QueryAsync<
+            DoctorSpecializationMappingResponse>(
             sql,
             new
             {
@@ -166,28 +171,28 @@ ORDER BY d.Name;";
 
     public async Task RemoveAsync(
         Guid doctorId,
-        Guid departmentId)
+        Guid specializationId)
     {
         using var connection = _db.CreateConnection();
 
         const string sql = @"
-DELETE FROM DoctorDepartments
+DELETE FROM DoctorSpecializationMappings
 WHERE DoctorId = @DoctorId
-AND DepartmentId = @DepartmentId;";
+AND SpecializationId = @SpecializationId;";
 
         await connection.ExecuteAsync(
             sql,
             new
             {
                 DoctorId = doctorId,
-                DepartmentId = departmentId
+                SpecializationId = specializationId
             });
     }
 
     public async Task<IEnumerable<DoctorListResponse>>
-        GetDepartmentDoctorsAsync(
+        GetSpecializationDoctorsAsync(
             Guid hospitalId,
-            Guid departmentId)
+            Guid specializationId)
     {
         using var connection = _db.CreateConnection();
 
@@ -204,20 +209,23 @@ SELECT
     d.IsAvailable,
     d.IsActive,
     d.CreatedAt
-FROM DoctorDepartments dd
+FROM DoctorSpecializationMappings dsm
 INNER JOIN Doctors d
-    ON d.Id = dd.DoctorId
-WHERE dd.DepartmentId = @DepartmentId
+    ON d.Id = dsm.DoctorId
+INNER JOIN DoctorSpecializations ds
+    ON ds.Id = dsm.SpecializationId
+WHERE dsm.SpecializationId = @SpecializationId
 AND d.HospitalId = @HospitalId
 AND d.IsDeleted = 0
+AND ds.IsDeleted = 0
 ORDER BY d.FullName;";
 
         return await connection.QueryAsync<DoctorListResponse>(
             sql,
             new
             {
-                DepartmentId = departmentId,
-                HospitalId = hospitalId
+                HospitalId = hospitalId,
+                SpecializationId = specializationId
             });
     }
 }
