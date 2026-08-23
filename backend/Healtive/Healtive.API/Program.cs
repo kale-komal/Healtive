@@ -115,6 +115,8 @@ builder.Services.AddScoped<IDoctorDepartmentRepository,  DoctorDepartmentReposit
 builder.Services.AddScoped<IDoctorDepartmentService, DoctorDepartmentService>();
 builder.Services.AddScoped<IDoctorSpecializationMappingRepository,DoctorSpecializationMappingRepository>();
 builder.Services.AddScoped<IDoctorSpecializationMappingService, DoctorSpecializationMappingService>();
+builder.Services.AddScoped<IDoctorAvailabilityRepository, DoctorAvailabilityRepository>();
+builder.Services.AddScoped<IDoctorAvailabilityService, DoctorAvailabilityService>();
 
 
 var app = builder.Build();
