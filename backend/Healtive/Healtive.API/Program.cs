@@ -117,7 +117,8 @@ builder.Services.AddScoped<IDoctorSpecializationMappingRepository,DoctorSpeciali
 builder.Services.AddScoped<IDoctorSpecializationMappingService, DoctorSpecializationMappingService>();
 builder.Services.AddScoped<IDoctorAvailabilityRepository, DoctorAvailabilityRepository>();
 builder.Services.AddScoped<IDoctorAvailabilityService, DoctorAvailabilityService>();
-
+builder.Services.AddScoped<IDoctorLeaveRepository, DoctorLeaveRepository>();
+builder.Services.AddScoped<IDoctorLeaveService, DoctorLeaveService>();
 
 var app = builder.Build();
 
