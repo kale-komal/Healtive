@@ -15,6 +15,31 @@ public class DoctorLeaveRepository : IDoctorLeaveRepository
         _db = db;
     }
 
+    // =========================================================
+    // DB MODEL
+    // =========================================================
+
+    private class DoctorLeaveDbModel
+    {
+        public Guid Id { get; set; }
+
+        public Guid DoctorId { get; set; }
+
+        public DateTime FromDate { get; set; }
+
+        public DateTime ToDate { get; set; }
+
+        public string? Reason { get; set; }
+
+        public bool IsApproved { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+    }
+
+    // =========================================================
+    // GET DOCTOR
+    // =========================================================
+
     public async Task<Doctor?> GetDoctorAsync(
         Guid hospitalId,
         Guid doctorId)
@@ -56,6 +81,10 @@ AND IsDeleted = 0;";
             });
     }
 
+    // =========================================================
+    // GET BY ID
+    // =========================================================
+
     public async Task<DoctorLeave?> GetByIdAsync(
         Guid doctorId,
         Guid id)
@@ -75,14 +104,33 @@ FROM DoctorLeaves
 WHERE Id = @Id
 AND DoctorId = @DoctorId;";
 
-        return await connection.QueryFirstOrDefaultAsync<DoctorLeave>(
-            sql,
-            new
-            {
-                Id = id,
-                DoctorId = doctorId
-            });
+        var row =
+            await connection.QueryFirstOrDefaultAsync<DoctorLeaveDbModel>(
+                sql,
+                new
+                {
+                    Id = id,
+                    DoctorId = doctorId
+                });
+
+        if (row == null)
+            return null;
+
+        return new DoctorLeave
+        {
+            Id = row.Id,
+            DoctorId = row.DoctorId,
+            FromDate = DateOnly.FromDateTime(row.FromDate),
+            ToDate = DateOnly.FromDateTime(row.ToDate),
+            Reason = row.Reason,
+            IsApproved = row.IsApproved,
+            CreatedAt = row.CreatedAt
+        };
     }
+
+    // =========================================================
+    // CHECK OVERLAP
+    // =========================================================
 
     public async Task<bool> HasOverlapAsync(
         Guid doctorId,
@@ -107,18 +155,28 @@ AND
     OR Id <> @ExcludeId
 );";
 
-        var count = await connection.ExecuteScalarAsync<int>(
-            sql,
-            new
-            {
-                DoctorId = doctorId,
-                FromDate = fromDate,
-                ToDate = toDate,
-                ExcludeId = excludeId
-            });
+        var count =
+            await connection.ExecuteScalarAsync<int>(
+                sql,
+                new
+                {
+                    DoctorId = doctorId,
+
+                    FromDate =
+                        fromDate.ToDateTime(TimeOnly.MinValue),
+
+                    ToDate =
+                        toDate.ToDateTime(TimeOnly.MinValue),
+
+                    ExcludeId = excludeId
+                });
 
         return count > 0;
     }
+
+    // =========================================================
+    // CREATE
+    // =========================================================
 
     public async Task CreateAsync(
         DoctorLeave leave)
@@ -149,8 +207,26 @@ VALUES
 
         await connection.ExecuteAsync(
             sql,
-            leave);
+            new
+            {
+                leave.Id,
+                leave.DoctorId,
+
+                FromDate =
+                    leave.FromDate.ToDateTime(TimeOnly.MinValue),
+
+                ToDate =
+                    leave.ToDate.ToDateTime(TimeOnly.MinValue),
+
+                leave.Reason,
+                leave.IsApproved,
+                leave.CreatedAt
+            });
     }
+
+    // =========================================================
+    // UPDATE
+    // =========================================================
 
     public async Task UpdateAsync(
         DoctorLeave leave)
@@ -162,14 +238,32 @@ UPDATE DoctorLeaves
 SET
     FromDate = @FromDate,
     ToDate = @ToDate,
-    Reason = @Reason
+    Reason = @Reason,
+    IsApproved = @IsApproved
 WHERE Id = @Id
 AND DoctorId = @DoctorId;";
 
         await connection.ExecuteAsync(
             sql,
-            leave);
+            new
+            {
+                leave.Id,
+                leave.DoctorId,
+
+                FromDate =
+                    leave.FromDate.ToDateTime(TimeOnly.MinValue),
+
+                ToDate =
+                    leave.ToDate.ToDateTime(TimeOnly.MinValue),
+
+                leave.Reason,
+                leave.IsApproved
+            });
     }
+
+    // =========================================================
+    // GET ALL LEAVES OF DOCTOR
+    // =========================================================
 
     public async Task<IEnumerable<DoctorLeaveResponse>>
         GetByDoctorAsync(
@@ -195,14 +289,35 @@ AND d.HospitalId = @HospitalId
 AND d.IsDeleted = 0
 ORDER BY dl.FromDate DESC;";
 
-        return await connection.QueryAsync<DoctorLeaveResponse>(
-            sql,
-            new
-            {
-                DoctorId = doctorId,
-                HospitalId = hospitalId
-            });
+        var rows =
+            await connection.QueryAsync<DoctorLeaveDbModel>(
+                sql,
+                new
+                {
+                    DoctorId = doctorId,
+                    HospitalId = hospitalId
+                });
+
+        return rows.Select(x => new DoctorLeaveResponse
+        {
+            Id = x.Id,
+            DoctorId = x.DoctorId,
+
+            FromDate =
+                DateOnly.FromDateTime(x.FromDate),
+
+            ToDate =
+                DateOnly.FromDateTime(x.ToDate),
+
+            Reason = x.Reason,
+            IsApproved = x.IsApproved,
+            CreatedAt = x.CreatedAt
+        });
     }
+
+    // =========================================================
+    // DELETE
+    // =========================================================
 
     public async Task DeleteAsync(
         Guid doctorId,
@@ -224,6 +339,10 @@ AND DoctorId = @DoctorId;";
             });
     }
 
+    // =========================================================
+    // APPROVE
+    // =========================================================
+
     public async Task ApproveAsync(
         Guid doctorId,
         Guid id)
@@ -244,6 +363,10 @@ AND DoctorId = @DoctorId;";
                 DoctorId = doctorId
             });
     }
+
+    // =========================================================
+    // REJECT
+    // =========================================================
 
     public async Task RejectAsync(
         Guid doctorId,
