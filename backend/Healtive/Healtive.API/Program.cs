@@ -9,6 +9,7 @@ using Healtive.Infrastructure.Repositories.Doctors;
 using Healtive.Infrastructure.Repositories.DoctorSpecializations;
 using Healtive.Infrastructure.Repositories.Hospitals;
 using Healtive.Infrastructure.Repositories.HospitalSubscriptions;
+using Healtive.Infrastructure.Repositories.Patients;
 using Healtive.Infrastructure.Repositories.Roles;
 using Healtive.Infrastructure.Repositories.Staff;
 using Healtive.Infrastructure.Repositories.SubscriptionPlans;
@@ -21,6 +22,7 @@ using Healtive.Infrastructure.Services.Doctors;
 using Healtive.Infrastructure.Services.DoctorSpecializations;
 using Healtive.Infrastructure.Services.Hospitals;
 using Healtive.Infrastructure.Services.HospitalSubscriptions;
+using Healtive.Infrastructure.Services.Patients;
 using Healtive.Infrastructure.Services.Roles;
 using Healtive.Infrastructure.Services.Staff;
 using Healtive.Infrastructure.Services.SubscriptionPlans;
@@ -119,6 +121,8 @@ builder.Services.AddScoped<IDoctorAvailabilityRepository, DoctorAvailabilityRepo
 builder.Services.AddScoped<IDoctorAvailabilityService, DoctorAvailabilityService>();
 builder.Services.AddScoped<IDoctorLeaveRepository, DoctorLeaveRepository>();
 builder.Services.AddScoped<IDoctorLeaveService, DoctorLeaveService>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IPatientService, PatientService>();
 
 var app = builder.Build();
 
