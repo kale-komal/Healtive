@@ -7,6 +7,7 @@ public class UpdateAppointmentRequest
     public Guid DoctorId { get; set; }
 
     public Guid DepartmentId { get; set; }
+    public Guid AppointmentStatusId { get; set; }
 
     public DateOnly AppointmentDate { get; set; }
 

@@ -25,3 +25,59 @@ CREATE TABLE AppointmentStatuses
     CONSTRAINT UQ_AppointmentStatuses_Code
         UNIQUE(Code)
 );
+
+
+-- =============================================
+-- Seed: Default Appointment Statuses
+-- =============================================
+
+INSERT INTO AppointmentStatuses
+(
+    Id,
+    Name,
+    Code,
+    Description,
+    DisplayOrder,
+    IsActive
+)
+VALUES
+(
+    UUID(),
+    'Scheduled',
+    'SCHEDULED',
+    'Appointment has been scheduled.',
+    1,
+    TRUE
+),
+(
+    UUID(),
+    'Confirmed',
+    'CONFIRMED',
+    'Appointment has been confirmed.',
+    2,
+    TRUE
+),
+(
+    UUID(),
+    'Completed',
+    'COMPLETED',
+    'Appointment has been completed.',
+    3,
+    TRUE
+),
+(
+    UUID(),
+    'Cancelled',
+    'CANCELLED',
+    'Appointment has been cancelled.',
+    4,
+    TRUE
+),
+(
+    UUID(),
+    'No Show',
+    'NO_SHOW',
+    'Patient did not attend the appointment.',
+    5,
+    TRUE
+);

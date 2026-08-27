@@ -13,7 +13,9 @@ using Healtive.Infrastructure.Repositories.Patients;
 using Healtive.Infrastructure.Repositories.Roles;
 using Healtive.Infrastructure.Repositories.Staff;
 using Healtive.Infrastructure.Repositories.SubscriptionPlans;
+using Healtive.Infrastructure.Repositories.Appointments;
 using Healtive.Infrastructure.Seed;
+using Healtive.Infrastructure.Services.Appointments;
 using Healtive.Infrastructure.Services.Auth;
 using Healtive.Infrastructure.Services.Branches;
 using Healtive.Infrastructure.Services.Dashboard;
@@ -123,6 +125,8 @@ builder.Services.AddScoped<IDoctorLeaveRepository, DoctorLeaveRepository>();
 builder.Services.AddScoped<IDoctorLeaveService, DoctorLeaveService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 var app = builder.Build();
 

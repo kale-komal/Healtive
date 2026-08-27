@@ -12,6 +12,7 @@ public class CreateAppointmentRequest
 
     public Guid DepartmentId { get; set; }
 
+    public Guid AppointmentStatusId { get; set; }
     public DateOnly AppointmentDate { get; set; }
 
     public TimeSpan AppointmentTime { get; set; }
