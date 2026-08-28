@@ -523,6 +523,49 @@ AND IsDeleted = 0;";
             });
     }
 
+    public async Task<Doctor?> GetByUserIdAsync(
+    Guid hospitalId,
+    Guid userId)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+SELECT
+    Id,
+    HospitalId,
+    UserId,
+    FullName,
+    DoctorCode,
+    RegistrationNumber,
+    Qualification,
+    ExperienceYears,
+    ConsultationFee,
+    Gender,
+    DateOfBirth,
+    JoiningDate,
+    Bio,
+    ProfileImageUrl,
+    IsAvailable,
+    IsActive,
+    CreatedAt,
+    UpdatedAt,
+    IsDeleted
+FROM Doctors
+WHERE UserId = @UserId
+AND HospitalId = @HospitalId
+AND IsDeleted = 0
+AND IsActive = 1
+LIMIT 1;";
+
+        return await connection.QueryFirstOrDefaultAsync<Doctor>(
+            sql,
+            new
+            {
+                UserId = userId,
+                HospitalId = hospitalId
+            });
+    }
+
     public async Task<User?> GetUserByIdAsync(
         Guid userId)
     {

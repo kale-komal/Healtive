@@ -45,6 +45,14 @@ public interface IDoctorRepository
         Guid hospitalId,
         Guid doctorId);
 
+    // =========================================================
+    // DOCTOR PORTAL
+    // =========================================================
+
+    Task<Doctor?> GetByUserIdAsync(
+        Guid hospitalId,
+        Guid userId);
+
     Task<User?> GetUserByIdAsync(
         Guid userId);
 
@@ -61,6 +69,6 @@ public interface IDoctorRepository
         Guid doctorId);
 
     Task<Role?> GetRoleByNameAsync(
-    Guid hospitalId,
-    string roleName);
+        Guid hospitalId,
+        string roleName);
 }
