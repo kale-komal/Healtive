@@ -1,5 +1,6 @@
 ﻿using Healtive.Application.DTOs.Doctor;
 using Healtive.Application.Interfaces;
+using Healtive.Infrastructure.Services.Doctors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -75,6 +76,20 @@ public class DoctorController : ControllerBase
     public async Task<IActionResult> Deactivate(Guid id)
     {
         var response = await _service.DeactivateAsync(id);
+
+        return Ok(response);
+    }
+
+    // =========================================================
+    // RESET DOCTOR PASSWORD
+    // =========================================================
+
+    [HttpPost("{id:guid}/reset-password")]
+    public async Task<IActionResult> ResetPassword(
+        Guid id)
+    {
+        var response =
+            await _service.ResetPasswordAsync(id);
 
         return Ok(response);
     }

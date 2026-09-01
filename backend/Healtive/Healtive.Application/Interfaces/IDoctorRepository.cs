@@ -45,6 +45,11 @@ public interface IDoctorRepository
         Guid hospitalId,
         Guid doctorId);
 
+
+    Task ResetPasswordAsync(
+    Guid hospitalId,
+    Guid doctorId,
+    string passwordHash);
     // =========================================================
     // DOCTOR PORTAL
     // =========================================================

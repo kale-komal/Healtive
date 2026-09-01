@@ -127,6 +127,10 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IDoctorDashboardService, DoctorDashboardService>();
+builder.Services.AddScoped<IDoctorDashboardRepository, DoctorDashboardRepository>();
+builder.Services.AddScoped<IDoctorPatientRepository, DoctorPatientRepository>();
+builder.Services.AddScoped<IDoctorPatientService, DoctorPatientService>();
 
 var app = builder.Build();
 

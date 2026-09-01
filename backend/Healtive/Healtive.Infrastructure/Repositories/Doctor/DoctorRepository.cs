@@ -798,4 +798,32 @@ LIMIT 1;";
                 Name = roleName
             });
     }
+    public async Task ResetPasswordAsync(
+    Guid hospitalId,
+    Guid doctorId,
+    string passwordHash)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+UPDATE Users u
+INNER JOIN Doctors d
+    ON d.UserId = u.Id
+SET
+    u.PasswordHash = @PasswordHash
+WHERE d.Id = @DoctorId
+AND d.HospitalId = @HospitalId
+AND d.IsDeleted = 0
+AND u.IsDeleted = 0;";
+
+        await connection.ExecuteAsync(
+            sql,
+            new
+            {
+                DoctorId = doctorId,
+                HospitalId = hospitalId,
+                PasswordHash = passwordHash
+            });
+    }
+
 }

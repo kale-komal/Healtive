@@ -26,4 +26,6 @@ public interface IDoctorService
 
     Task<ApiResponse<string>> DeactivateAsync(
         Guid id);
+    Task<ApiResponse<string>>
+    ResetPasswordAsync(Guid doctorId);
 }

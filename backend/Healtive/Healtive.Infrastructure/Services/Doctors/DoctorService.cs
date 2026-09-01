@@ -151,8 +151,7 @@ public class DoctorService : IDoctorService
          */
         var username = mobileNumber;
 
-        var temporaryPassword =
-            "Doc@" + Random.Shared.Next(1000, 9999);
+        var temporaryPassword = "Doc@123";
 
         var passwordHash =
             _passwordHasher.HashPassword(
@@ -663,6 +662,59 @@ public class DoctorService : IDoctorService
         return ApiResponse<string>
             .SuccessResponse(
                 "Doctor deactivated successfully.",
+                "Success");
+    }
+
+    public async Task<ApiResponse<string>>
+    ResetPasswordAsync(Guid doctorId)
+    {
+        var hospitalId =
+            _currentUserService.HospitalId;
+
+        if (hospitalId == Guid.Empty)
+        {
+            return ApiResponse<string>
+                .FailureResponse(
+                    "Hospital context not found.");
+        }
+
+        var doctor =
+            await _repository.GetEntityByIdAsync(
+                hospitalId,
+                doctorId);
+
+        if (doctor == null)
+        {
+            return ApiResponse<string>
+                .FailureResponse(
+                    "Doctor not found.");
+        }
+
+        if (!doctor.UserId.HasValue)
+        {
+            return ApiResponse<string>
+                .FailureResponse(
+                    "Doctor login user not found.");
+        }
+
+        // =========================================================
+        // DEVELOPMENT DEFAULT PASSWORD
+        // =========================================================
+
+        const string newPassword = "Doc@123";
+
+        var passwordHash =
+            _passwordHasher.HashPassword(
+                newPassword);
+
+        await _repository.ResetPasswordAsync(
+            hospitalId,
+            doctorId,
+            passwordHash);
+
+        return ApiResponse<string>
+            .SuccessResponse(
+                "Doctor password reset successfully. New password: Doc@123",
                 "Success");
     }
 }
