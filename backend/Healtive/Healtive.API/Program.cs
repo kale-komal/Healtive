@@ -33,9 +33,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-
+using Dapper;
+using Healtive.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("Jwt"));
@@ -131,6 +133,9 @@ builder.Services.AddScoped<IDoctorDashboardService, DoctorDashboardService>();
 builder.Services.AddScoped<IDoctorDashboardRepository, DoctorDashboardRepository>();
 builder.Services.AddScoped<IDoctorPatientRepository, DoctorPatientRepository>();
 builder.Services.AddScoped<IDoctorPatientService, DoctorPatientService>();
+builder.Services.AddScoped<IDoctorPatientMedicalHistoryRepository, DoctorPatientMedicalHistoryRepository>();
+builder.Services.AddScoped<IDoctorPatientMedicalHistoryService, DoctorPatientMedicalHistoryService>();
+
 
 var app = builder.Build();
 

@@ -250,9 +250,7 @@ WHERE a.HospitalId = @HospitalId
 
 AND a.DoctorId = @DoctorId
 
-AND a.PatientId = @PatientId
-
-AND a.IsDeleted = 0;";
+AND a.PatientId = @PatientId;";
 
         var count =
             await connection.ExecuteScalarAsync<int>(
