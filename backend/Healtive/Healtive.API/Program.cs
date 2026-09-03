@@ -135,6 +135,8 @@ builder.Services.AddScoped<IDoctorPatientRepository, DoctorPatientRepository>();
 builder.Services.AddScoped<IDoctorPatientService, DoctorPatientService>();
 builder.Services.AddScoped<IDoctorPatientMedicalHistoryRepository, DoctorPatientMedicalHistoryRepository>();
 builder.Services.AddScoped<IDoctorPatientMedicalHistoryService, DoctorPatientMedicalHistoryService>();
+builder.Services.AddScoped<IConsultationRepository, ConsultationRepository>();
+builder.Services.AddScoped<IConsultationService, ConsultationService>();
 
 
 var app = builder.Build();
