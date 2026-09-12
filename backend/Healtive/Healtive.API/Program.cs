@@ -1,6 +1,10 @@
+using Dapper;
 using Healtive.Application.Interfaces;
+using Healtive.Application.Interfaces.Repositories;
 using Healtive.Infrastructure.Configuration;
 using Healtive.Infrastructure.Data;
+using Healtive.Infrastructure.Data;
+using Healtive.Infrastructure.Repositories.Appointments;
 using Healtive.Infrastructure.Repositories.Auth;
 using Healtive.Infrastructure.Repositories.Branches;
 using Healtive.Infrastructure.Repositories.Dashboard;
@@ -13,7 +17,6 @@ using Healtive.Infrastructure.Repositories.Patients;
 using Healtive.Infrastructure.Repositories.Roles;
 using Healtive.Infrastructure.Repositories.Staff;
 using Healtive.Infrastructure.Repositories.SubscriptionPlans;
-using Healtive.Infrastructure.Repositories.Appointments;
 using Healtive.Infrastructure.Seed;
 using Healtive.Infrastructure.Services.Appointments;
 using Healtive.Infrastructure.Services.Auth;
@@ -33,8 +36,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Dapper;
-using Healtive.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
@@ -137,7 +138,8 @@ builder.Services.AddScoped<IDoctorPatientMedicalHistoryRepository, DoctorPatient
 builder.Services.AddScoped<IDoctorPatientMedicalHistoryService, DoctorPatientMedicalHistoryService>();
 builder.Services.AddScoped<IConsultationRepository, ConsultationRepository>();
 builder.Services.AddScoped<IConsultationService, ConsultationService>();
-
+builder.Services.AddScoped<IMedicalHistoryRepository, MedicalHistoryRepository>();
+builder.Services.AddScoped<IMedicalHistoryService, MedicalHistoryService>();
 
 var app = builder.Build();
 
