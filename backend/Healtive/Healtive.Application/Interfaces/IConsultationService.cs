@@ -34,7 +34,7 @@ public interface IConsultationService
     // COMPLETE CONSULTATION
     // =========================================================
 
-    Task<ApiResponse<string>>
+    Task<ApiResponse<ConsultationResponse>>
         CompleteAsync(
             Guid consultationId);
 }

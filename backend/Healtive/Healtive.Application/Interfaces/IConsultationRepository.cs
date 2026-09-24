@@ -42,11 +42,21 @@ public interface IConsultationRepository
         Consultation consultation);
 
     // =========================================================
+    // GET APPOINTMENT STATUS
+    // =========================================================
+
+    Task<string?> GetAppointmentStatusCodeAsync(
+        Guid hospitalId,
+        Guid doctorId,
+        Guid appointmentId);
+
+    // =========================================================
     // COMPLETE CONSULTATION
     // =========================================================
 
-    Task CompleteAsync(
+    Task<ConsultationResponse?> CompleteConsultationAsync(
         Guid hospitalId,
         Guid doctorId,
-        Guid consultationId);
+        Guid consultationId,
+        Guid changedByUserId);
 }

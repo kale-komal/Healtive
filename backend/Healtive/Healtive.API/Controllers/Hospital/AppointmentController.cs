@@ -112,6 +112,23 @@ public class AppointmentController : ControllerBase
     }
 
     // =========================================================
+    // GET APPOINTMENT QUEUE
+    // =========================================================
+
+    [HttpGet("queue")]
+    public async Task<IActionResult> GetQueue(
+        [FromQuery] DateOnly date,
+        [FromQuery] Guid doctorId)
+    {
+        var response =
+            await _appointmentService.GetQueueAsync(
+                doctorId,
+                date);
+
+        return Ok(response);
+    }
+
+    // =========================================================
     // UPDATE APPOINTMENT STATUS
     // =========================================================
 
@@ -126,6 +143,20 @@ public class AppointmentController : ControllerBase
                 id,
                 appointmentStatusId,
                 remarks);
+
+        return Ok(response);
+    }
+
+    // =========================================================
+    // CHECK IN APPOINTMENT
+    // =========================================================
+
+    [HttpPatch("{id:guid}/check-in")]
+    public async Task<IActionResult> CheckIn(
+        Guid id)
+    {
+        var response =
+            await _appointmentService.CheckInAsync(id);
 
         return Ok(response);
     }

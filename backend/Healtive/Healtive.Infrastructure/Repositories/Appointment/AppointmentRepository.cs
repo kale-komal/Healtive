@@ -523,6 +523,282 @@ AND HospitalId = @HospitalId;";
             });
     }
 
+    public async Task<AppointmentCheckInResult> CheckInAsync(
+        Guid hospitalId,
+        Guid appointmentId,
+        Guid? doctorId,
+        Guid changedByUserId,
+        string remark)
+    {
+        using var connection = _db.CreateConnection();
+
+        using var transaction = connection.BeginTransaction();
+
+        const string appointmentSql = @"
+SELECT
+    a.Id,
+    a.DoctorId,
+    a.AppointmentDate,
+    s.Code AS AppointmentStatusCode
+FROM Appointments a
+INNER JOIN AppointmentStatuses s
+    ON s.Id = a.AppointmentStatusId
+WHERE a.Id = @AppointmentId
+AND a.HospitalId = @HospitalId
+AND (@DoctorId IS NULL OR a.DoctorId = @DoctorId)
+FOR UPDATE;";
+
+        var appointment =
+            await connection.QueryFirstOrDefaultAsync<CheckInAppointmentDbModel>(
+                appointmentSql,
+                new
+                {
+                    AppointmentId = appointmentId,
+                    HospitalId = hospitalId,
+                    DoctorId = doctorId
+                },
+                transaction);
+
+        if (appointment == null)
+        {
+            transaction.Rollback();
+
+            return new AppointmentCheckInResult
+            {
+                Outcome = AppointmentCheckInOutcome.NotFound
+            };
+        }
+
+        if (appointment.AppointmentStatusCode == "CHECKED_IN")
+        {
+            transaction.Rollback();
+
+            return new AppointmentCheckInResult
+            {
+                Outcome = AppointmentCheckInOutcome.AlreadyCheckedIn
+            };
+        }
+
+        if (appointment.AppointmentStatusCode is
+            "CANCELLED" or "NO_SHOW" or "COMPLETED")
+        {
+            transaction.Rollback();
+
+            return new AppointmentCheckInResult
+            {
+                Outcome = AppointmentCheckInOutcome.TerminalStatus,
+                AppointmentStatusCode = appointment.AppointmentStatusCode
+            };
+        }
+
+        var lockName =
+            $"healtive:check-in:{appointment.DoctorId}:{appointment.AppointmentDate:yyyy-MM-dd}";
+
+        var lockAcquired =
+            await connection.ExecuteScalarAsync<int>(
+                "SELECT GET_LOCK(@LockName, 10);",
+                new
+                {
+                    LockName = lockName
+                },
+                transaction);
+
+        if (lockAcquired != 1)
+        {
+            transaction.Rollback();
+
+            throw new InvalidOperationException(
+                "Could not acquire check-in lock. Please try again.");
+        }
+
+        try
+        {
+            var checkedInStatusId =
+                await connection.ExecuteScalarAsync<Guid>(
+                    @"SELECT Id
+                      FROM AppointmentStatuses
+                      WHERE Code = 'CHECKED_IN'
+                      AND IsActive = 1
+                      LIMIT 1;",
+                    transaction: transaction);
+
+            if (checkedInStatusId == Guid.Empty)
+            {
+                transaction.Rollback();
+
+                return new AppointmentCheckInResult
+                {
+                    Outcome = AppointmentCheckInOutcome.StatusNotConfigured
+                };
+            }
+
+            var nextToken =
+                await connection.ExecuteScalarAsync<int>(
+                    @"SELECT COALESCE(MAX(TokenNumber), 0) + 1
+                      FROM Appointments
+                      WHERE DoctorId = @DoctorId
+                      AND AppointmentDate = @AppointmentDate
+                      FOR UPDATE;",
+                    new
+                    {
+                        DoctorId = appointment.DoctorId,
+                        AppointmentDate = appointment.AppointmentDate
+                    },
+                    transaction);
+
+            var now = DateTime.UtcNow;
+
+            await connection.ExecuteAsync(
+                @"UPDATE Appointments
+                  SET
+                      AppointmentStatusId = @AppointmentStatusId,
+                      TokenNumber = @TokenNumber,
+                      UpdatedAt = @UpdatedAt
+                  WHERE Id = @AppointmentId
+                  AND HospitalId = @HospitalId;",
+                new
+                {
+                    AppointmentStatusId = checkedInStatusId,
+                    TokenNumber = nextToken,
+                    UpdatedAt = now,
+                    AppointmentId = appointmentId,
+                    HospitalId = hospitalId
+                },
+                transaction);
+
+            await connection.ExecuteAsync(
+                @"INSERT INTO AppointmentHistory
+                  (
+                      Id,
+                      AppointmentId,
+                      AppointmentStatusId,
+                      ChangedByUserId,
+                      Remarks,
+                      ChangedAt
+                  )
+                  VALUES
+                  (
+                      @Id,
+                      @AppointmentId,
+                      @AppointmentStatusId,
+                      @ChangedByUserId,
+                      @Remarks,
+                      @ChangedAt
+                  );",
+                new
+                {
+                    Id = Guid.NewGuid(),
+                    AppointmentId = appointmentId,
+                    AppointmentStatusId = checkedInStatusId,
+                    ChangedByUserId = changedByUserId,
+                    Remarks = remark,
+                    ChangedAt = now
+                },
+                transaction);
+
+            transaction.Commit();
+
+            var response =
+                await GetByIdAsync(
+                    hospitalId,
+                    appointmentId);
+
+            return new AppointmentCheckInResult
+            {
+                Outcome = AppointmentCheckInOutcome.Success,
+                Appointment = response
+            };
+        }
+        finally
+        {
+            await connection.ExecuteAsync(
+                "SELECT RELEASE_LOCK(@LockName);",
+                new
+                {
+                    LockName = lockName
+                });
+        }
+    }
+
+    public async Task<IEnumerable<AppointmentQueueItemResponse>>
+        GetQueueAsync(
+            Guid hospitalId,
+            Guid doctorId,
+            DateOnly appointmentDate)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+SELECT
+    a.Id AS AppointmentId,
+    a.AppointmentNumber,
+    a.PatientId,
+    CONCAT(
+        p.FirstName,
+        ' ',
+        p.LastName
+    ) AS PatientName,
+    p.PatientCode,
+    a.DoctorId,
+    d.FullName AS DoctorName,
+    a.AppointmentDate,
+    a.AppointmentTime,
+    a.TokenNumber,
+    s.Name AS AppointmentStatus,
+    s.Code AS AppointmentStatusCode,
+    a.ConsultationType,
+    a.IsFirstVisit
+FROM Appointments a
+INNER JOIN AppointmentStatuses s
+    ON s.Id = a.AppointmentStatusId
+INNER JOIN Patients p
+    ON p.Id = a.PatientId
+INNER JOIN Doctors d
+    ON d.Id = a.DoctorId
+WHERE a.HospitalId = @HospitalId
+AND a.DoctorId = @DoctorId
+AND a.AppointmentDate = @AppointmentDate
+AND s.Code IN ('CHECKED_IN', 'CALLED')
+AND p.IsDeleted = 0
+AND d.IsDeleted = 0
+ORDER BY
+    (a.TokenNumber IS NULL) ASC,
+    a.TokenNumber ASC,
+    a.AppointmentTime ASC;";
+
+        return await connection.QueryAsync<AppointmentQueueItemResponse>(
+            sql,
+            new
+            {
+                HospitalId = hospitalId,
+                DoctorId = doctorId,
+                AppointmentDate =
+                    appointmentDate.ToDateTime(TimeOnly.MinValue)
+            });
+    }
+
+    public async Task<string?> GetUserNameAsync(
+        Guid hospitalId,
+        Guid userId)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+SELECT CONCAT(FirstName, ' ', LastName)
+FROM Users
+WHERE Id = @UserId
+AND HospitalId = @HospitalId
+AND IsDeleted = 0;";
+
+        return await connection.ExecuteScalarAsync<string?>(
+            sql,
+            new
+            {
+                UserId = userId,
+                HospitalId = hospitalId
+            });
+    }
+
     public async Task AddHistoryAsync(
         AppointmentHistory history)
     {
@@ -769,6 +1045,17 @@ ORDER BY aa.UploadedAt DESC;";
         public DateTime CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
+    }
+
+    private class CheckInAppointmentDbModel
+    {
+        public Guid Id { get; set; }
+
+        public Guid DoctorId { get; set; }
+
+        public DateTime AppointmentDate { get; set; }
+
+        public string AppointmentStatusCode { get; set; } = string.Empty;
     }
 
     private class DoctorAvailableSlotDbModel

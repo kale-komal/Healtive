@@ -36,6 +36,8 @@ public class HospitalResponse
 
     public bool IsActive { get; set; }
 
+    public DateTime CreatedAt { get; set; }
+
     public string AdminUsername { get; set; } = string.Empty;
 
     public string TemporaryPassword { get; set; } = string.Empty;

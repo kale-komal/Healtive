@@ -31,6 +31,14 @@ public interface IAppointmentService
         Guid appointmentStatusId,
         string? remarks = null);
 
+    Task<ApiResponse<AppointmentResponse>> CheckInAsync(
+        Guid appointmentId);
+
+    Task<ApiResponse<IEnumerable<AppointmentQueueItemResponse>>>
+        GetQueueAsync(
+            Guid doctorId,
+            DateOnly appointmentDate);
+
     Task<IEnumerable<AppointmentHistoryResponse>>
         GetHistoryAsync(
             Guid appointmentId);

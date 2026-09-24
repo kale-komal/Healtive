@@ -249,21 +249,151 @@ AND DoctorId = @DoctorId;";
     }
 
     // =========================================================
-    // COMPLETE CONSULTATION
+    // GET APPOINTMENT STATUS
     // =========================================================
 
-    public async Task CompleteAsync(
-        Guid hospitalId,
-        Guid doctorId,
-        Guid consultationId)
+    public async Task<string?>
+        GetAppointmentStatusCodeAsync(
+            Guid hospitalId,
+            Guid doctorId,
+            Guid appointmentId)
     {
         using var connection = _db.CreateConnection();
 
         const string sql = @"
+SELECT s.Code
+FROM Appointments a
+INNER JOIN AppointmentStatuses s
+    ON s.Id = a.AppointmentStatusId
+WHERE a.Id = @AppointmentId
+AND a.HospitalId = @HospitalId
+AND a.DoctorId = @DoctorId
+LIMIT 1;";
+
+        return await connection.QueryFirstOrDefaultAsync<string?>(
+            sql,
+            new
+            {
+                AppointmentId = appointmentId,
+                HospitalId = hospitalId,
+                DoctorId = doctorId
+            });
+    }
+
+    // =========================================================
+    // COMPLETE CONSULTATION
+    // =========================================================
+
+    public async Task<ConsultationResponse?>
+        CompleteConsultationAsync(
+            Guid hospitalId,
+            Guid doctorId,
+            Guid consultationId,
+            Guid changedByUserId)
+    {
+        using var connection = _db.CreateConnection();
+
+        connection.Open();
+
+        using var transaction = connection.BeginTransaction();
+
+        try
+        {
+            // =====================================================
+            // 1. RESOLVE COMPLETED APPOINTMENT STATUS
+            // =====================================================
+
+            const string statusSql = @"
+SELECT Id
+FROM AppointmentStatuses
+WHERE Code = 'COMPLETED'
+LIMIT 1;";
+
+            var completedStatusId =
+                await connection.QueryFirstOrDefaultAsync<Guid?>(
+                    statusSql,
+                    transaction: transaction);
+
+            if (completedStatusId == null ||
+                completedStatusId == Guid.Empty)
+            {
+                transaction.Rollback();
+
+                return null;
+            }
+
+            // =====================================================
+            // 2. VERIFY CONSULTATION OWNERSHIP
+            // =====================================================
+
+            const string consultationSql = @"
+SELECT
+    Id,
+    AppointmentId
+FROM Consultations
+WHERE Id = @ConsultationId
+AND HospitalId = @HospitalId
+AND DoctorId = @DoctorId
+LIMIT 1;";
+
+            var consultation =
+                await connection.QueryFirstOrDefaultAsync<ConsultationCompletionDbModel>(
+                    consultationSql,
+                    new
+                    {
+                        ConsultationId = consultationId,
+                        HospitalId = hospitalId,
+                        DoctorId = doctorId
+                    },
+                    transaction);
+
+            if (consultation == null)
+            {
+                transaction.Rollback();
+
+                return null;
+            }
+
+            // =====================================================
+            // 3. VERIFY APPOINTMENT OWNERSHIP
+            // =====================================================
+
+            const string appointmentSql = @"
+SELECT Id
+FROM Appointments
+WHERE Id = @AppointmentId
+AND HospitalId = @HospitalId
+AND DoctorId = @DoctorId
+LIMIT 1;";
+
+            var appointmentId =
+                await connection.QueryFirstOrDefaultAsync<Guid?>(
+                    appointmentSql,
+                    new
+                    {
+                        AppointmentId = consultation.AppointmentId,
+                        HospitalId = hospitalId,
+                        DoctorId = doctorId
+                    },
+                    transaction);
+
+            if (appointmentId == null ||
+                appointmentId == Guid.Empty)
+            {
+                transaction.Rollback();
+
+                return null;
+            }
+
+            // =====================================================
+            // 4. UPDATE CONSULTATION
+            // =====================================================
+
+            const string updateConsultationSql = @"
 UPDATE Consultations
 
 SET
-    IsCompleted = 1,
+    IsCompleted = TRUE,
     CompletedAt = UTC_TIMESTAMP(),
     UpdatedAt = UTC_TIMESTAMP()
 
@@ -271,13 +401,106 @@ WHERE Id = @ConsultationId
 AND HospitalId = @HospitalId
 AND DoctorId = @DoctorId;";
 
-        await connection.ExecuteAsync(
-            sql,
-            new
-            {
-                ConsultationId = consultationId,
-                HospitalId = hospitalId,
-                DoctorId = doctorId
-            });
+            await connection.ExecuteAsync(
+                updateConsultationSql,
+                new
+                {
+                    ConsultationId = consultationId,
+                    HospitalId = hospitalId,
+                    DoctorId = doctorId
+                },
+                transaction);
+
+            // =====================================================
+            // 5. UPDATE APPOINTMENT STATUS
+            // =====================================================
+
+            const string updateAppointmentSql = @"
+UPDATE Appointments
+
+SET
+    AppointmentStatusId = @CompletedStatusId,
+    UpdatedAt = UTC_TIMESTAMP()
+
+WHERE Id = @AppointmentId
+AND HospitalId = @HospitalId
+AND DoctorId = @DoctorId;";
+
+            await connection.ExecuteAsync(
+                updateAppointmentSql,
+                new
+                {
+                    AppointmentId = consultation.AppointmentId,
+                    HospitalId = hospitalId,
+                    DoctorId = doctorId,
+                    CompletedStatusId = completedStatusId
+                },
+                transaction);
+
+            // =====================================================
+            // 6. INSERT APPOINTMENT HISTORY
+            // =====================================================
+
+            const string insertHistorySql = @"
+INSERT INTO AppointmentHistory
+(
+    Id,
+    AppointmentId,
+    AppointmentStatusId,
+    ChangedByUserId,
+    Remarks,
+    ChangedAt
+)
+VALUES
+(
+    @Id,
+    @AppointmentId,
+    @AppointmentStatusId,
+    @ChangedByUserId,
+    @Remarks,
+    @ChangedAt
+);";
+
+            await connection.ExecuteAsync(
+                insertHistorySql,
+                new
+                {
+                    Id = Guid.NewGuid(),
+                    AppointmentId = consultation.AppointmentId,
+                    AppointmentStatusId = completedStatusId,
+                    ChangedByUserId = changedByUserId,
+                    Remarks = "Consultation completed.",
+                    ChangedAt = DateTime.UtcNow
+                },
+                transaction);
+
+            // =====================================================
+            // 7. COMMIT
+            // =====================================================
+
+            transaction.Commit();
+
+            return await GetByAppointmentIdAsync(
+                hospitalId,
+                doctorId,
+                consultation.AppointmentId);
+        }
+        catch
+        {
+            transaction.Rollback();
+
+            throw;
+        }
+    }
+
+    // =========================================================
+    // PRIVATE DB MODELS
+    // =========================================================
+
+    private class ConsultationCompletionDbModel
+    {
+        public Guid Id { get; set; }
+
+        public Guid AppointmentId { get; set; }
     }
 }

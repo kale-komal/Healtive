@@ -10,13 +10,19 @@ public class AppointmentService : IAppointmentService
 {
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IDoctorRepository _doctorRepository;
 
     public AppointmentService(
         IAppointmentRepository appointmentRepository,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        ICurrentUserService currentUserService,
+        IDoctorRepository doctorRepository)
     {
         _appointmentRepository = appointmentRepository;
         _httpContextAccessor = httpContextAccessor;
+        _currentUserService = currentUserService;
+        _doctorRepository = doctorRepository;
     }
 
     // =========================================================
@@ -308,6 +314,160 @@ public class AppointmentService : IAppointmentService
         await _appointmentRepository.AddHistoryAsync(history);
 
         return true;
+    }
+
+    // =========================================================
+    // CHECK IN
+    // =========================================================
+
+    public async Task<ApiResponse<AppointmentResponse>> CheckInAsync(
+        Guid appointmentId)
+    {
+        var hospitalId = _currentUserService.HospitalId;
+
+        if (hospitalId == Guid.Empty)
+        {
+            return ApiResponse<AppointmentResponse>.FailureResponse(
+                "Hospital context not found.");
+        }
+
+        var userId = _currentUserService.UserId;
+
+        if (userId == Guid.Empty)
+        {
+            return ApiResponse<AppointmentResponse>.FailureResponse(
+                "User context not found.");
+        }
+
+        Guid? doctorId = null;
+
+        if (_currentUserService.Role == "Doctor")
+        {
+            var doctor = await _doctorRepository.GetByUserIdAsync(
+                hospitalId,
+                userId);
+
+            if (doctor == null)
+            {
+                return ApiResponse<AppointmentResponse>.FailureResponse(
+                    "Doctor profile not found.");
+            }
+
+            doctorId = doctor.Id;
+        }
+
+        var userName =
+            await _appointmentRepository.GetUserNameAsync(
+                hospitalId,
+                userId);
+
+        var remark =
+            $"{(string.IsNullOrWhiteSpace(userName) ? "User" : userName)} checked-in the patient.";
+
+        var result =
+            await _appointmentRepository.CheckInAsync(
+                hospitalId,
+                appointmentId,
+                doctorId,
+                userId,
+                remark);
+
+        switch (result.Outcome)
+        {
+            case AppointmentCheckInOutcome.Success:
+
+                if (result.Appointment == null)
+                {
+                    return ApiResponse<AppointmentResponse>.FailureResponse(
+                        "Appointment could not be retrieved after check-in.");
+                }
+
+                return ApiResponse<AppointmentResponse>.SuccessResponse(
+                    result.Appointment,
+                    "Patient checked in successfully.");
+
+            case AppointmentCheckInOutcome.NotFound:
+
+                return ApiResponse<AppointmentResponse>.FailureResponse(
+                    "Appointment not found.");
+
+            case AppointmentCheckInOutcome.AlreadyCheckedIn:
+
+                return ApiResponse<AppointmentResponse>.FailureResponse(
+                    "Appointment is already checked in.");
+
+            case AppointmentCheckInOutcome.TerminalStatus:
+
+                var terminalMessage = result.AppointmentStatusCode switch
+                {
+                    "CANCELLED" => "Cancelled appointment cannot be checked in.",
+                    "NO_SHOW" => "No-show appointment cannot be checked in.",
+                    "COMPLETED" => "Completed appointment cannot be checked in.",
+                    _ => "Appointment cannot be checked in."
+                };
+
+                return ApiResponse<AppointmentResponse>.FailureResponse(
+                    terminalMessage);
+
+            default:
+
+                return ApiResponse<AppointmentResponse>.FailureResponse(
+                    "Appointment check-in failed.");
+        }
+    }
+
+    // =========================================================
+    // GET QUEUE
+    // =========================================================
+
+    public async Task<ApiResponse<IEnumerable<AppointmentQueueItemResponse>>>
+        GetQueueAsync(
+            Guid doctorId,
+            DateOnly appointmentDate)
+    {
+        var hospitalId = _currentUserService.HospitalId;
+
+        if (hospitalId == Guid.Empty)
+        {
+            return ApiResponse<IEnumerable<AppointmentQueueItemResponse>>
+                .FailureResponse(
+                    "Hospital context not found.");
+        }
+
+        var effectiveDoctorId = doctorId;
+
+        if (_currentUserService.Role == "Doctor")
+        {
+            var doctor = await _doctorRepository.GetByUserIdAsync(
+                hospitalId,
+                _currentUserService.UserId);
+
+            if (doctor == null)
+            {
+                return ApiResponse<IEnumerable<AppointmentQueueItemResponse>>
+                    .FailureResponse(
+                        "Doctor profile not found.");
+            }
+
+            effectiveDoctorId = doctor.Id;
+        }
+        else if (effectiveDoctorId == Guid.Empty)
+        {
+            return ApiResponse<IEnumerable<AppointmentQueueItemResponse>>
+                .FailureResponse(
+                    "Doctor is required.");
+        }
+
+        var queue =
+            await _appointmentRepository.GetQueueAsync(
+                hospitalId,
+                effectiveDoctorId,
+                appointmentDate);
+
+        return ApiResponse<IEnumerable<AppointmentQueueItemResponse>>
+            .SuccessResponse(
+                queue,
+                "Appointment queue retrieved successfully.");
     }
 
     // =========================================================

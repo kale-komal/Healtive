@@ -385,7 +385,7 @@ public class ConsultationService : IConsultationService
     // COMPLETE CONSULTATION
     // =========================================================
 
-    public async Task<ApiResponse<string>>
+    public async Task<ApiResponse<ConsultationResponse>>
         CompleteAsync(
             Guid consultationId)
     {
@@ -397,21 +397,21 @@ public class ConsultationService : IConsultationService
 
         if (hospitalId == Guid.Empty)
         {
-            return ApiResponse<string>
+            return ApiResponse<ConsultationResponse>
                 .FailureResponse(
                     "Hospital context not found.");
         }
 
         if (userId == Guid.Empty)
         {
-            return ApiResponse<string>
+            return ApiResponse<ConsultationResponse>
                 .FailureResponse(
                     "User context not found.");
         }
 
         if (consultationId == Guid.Empty)
         {
-            return ApiResponse<string>
+            return ApiResponse<ConsultationResponse>
                 .FailureResponse(
                     "Consultation ID is required.");
         }
@@ -423,7 +423,7 @@ public class ConsultationService : IConsultationService
 
         if (doctor == null)
         {
-            return ApiResponse<string>
+            return ApiResponse<ConsultationResponse>
                 .FailureResponse(
                     "Doctor profile not found.");
         }
@@ -436,27 +436,79 @@ public class ConsultationService : IConsultationService
 
         if (consultation == null)
         {
-            return ApiResponse<string>
+            return ApiResponse<ConsultationResponse>
                 .FailureResponse(
                     "Consultation not found.");
         }
 
         if (consultation.IsCompleted)
         {
-            return ApiResponse<string>
+            return ApiResponse<ConsultationResponse>
                 .FailureResponse(
                     "Consultation is already completed.");
         }
 
-        await _repository.CompleteAsync(
-            hospitalId,
-            doctor.Id,
-            consultationId);
+        // =====================================================
+        // VERIFY APPOINTMENT AND ITS CURRENT STATUS
+        // =====================================================
 
-        return ApiResponse<string>
+        var appointmentStatus =
+            await _repository.GetAppointmentStatusCodeAsync(
+                hospitalId,
+                doctor.Id,
+                consultation.AppointmentId);
+
+        if (appointmentStatus == null)
+        {
+            return ApiResponse<ConsultationResponse>
+                .FailureResponse(
+                    "Appointment not found or does not belong to this doctor.");
+        }
+
+        if (appointmentStatus == "CANCELLED")
+        {
+            return ApiResponse<ConsultationResponse>
+                .FailureResponse(
+                    "Cancelled appointment cannot be completed.");
+        }
+
+        if (appointmentStatus == "NO_SHOW")
+        {
+            return ApiResponse<ConsultationResponse>
+                .FailureResponse(
+                    "No-show appointment cannot be completed.");
+        }
+
+        if (appointmentStatus == "COMPLETED")
+        {
+            return ApiResponse<ConsultationResponse>
+                .FailureResponse(
+                    "Appointment is already completed.");
+        }
+
+        // =====================================================
+        // PENDING LAB ORDERS, FOLLOW-UPS AND PRESCRIPTIONS
+        // DO NOT BLOCK COMPLETION.
+        // =====================================================
+
+        var response =
+            await _repository.CompleteConsultationAsync(
+                hospitalId,
+                doctor.Id,
+                consultationId,
+                userId);
+
+        if (response == null)
+        {
+            return ApiResponse<ConsultationResponse>
+                .FailureResponse(
+                    "Unable to complete consultation.");
+        }
+
+        return ApiResponse<ConsultationResponse>
             .SuccessResponse(
-                "Consultation completed successfully.",
-                "Success");
+                response,
+                "Consultation completed successfully.");
     }
 
     // =========================================================

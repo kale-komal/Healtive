@@ -499,4 +499,137 @@ LIMIT 1;";
 
         return await connection.QueryFirstOrDefaultAsync<string>(sql);
     }
+
+    public async Task<User?> GetHospitalAdminUserAsync(
+        Guid hospitalId)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+SELECT u.*
+FROM Users u
+INNER JOIN UserRoles ur
+    ON ur.UserId = u.Id
+INNER JOIN Roles r
+    ON r.Id = ur.RoleId
+WHERE u.HospitalId = @HospitalId
+AND r.Name = 'HospitalAdmin'
+AND u.IsDeleted = 0
+LIMIT 1;";
+
+        return await connection.QueryFirstOrDefaultAsync<User>(
+            sql,
+            new
+            {
+                HospitalId = hospitalId
+            });
+    }
+
+    public async Task<bool> UserEmailExistsAsync(
+        Guid hospitalId,
+        Guid userId,
+        string email)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+SELECT COUNT(*)
+FROM Users
+WHERE HospitalId = @HospitalId
+AND Email = @Email
+AND Id <> @UserId
+AND IsDeleted = 0;";
+
+        return await connection.ExecuteScalarAsync<int>(
+            sql,
+            new
+            {
+                HospitalId = hospitalId,
+                UserId = userId,
+                Email = email
+            }) > 0;
+    }
+
+    public async Task<bool> UserMobileExistsAsync(
+        Guid hospitalId,
+        Guid userId,
+        string mobile)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+SELECT COUNT(*)
+FROM Users
+WHERE HospitalId = @HospitalId
+AND MobileNumber = @MobileNumber
+AND Id <> @UserId
+AND IsDeleted = 0;";
+
+        return await connection.ExecuteScalarAsync<int>(
+            sql,
+            new
+            {
+                HospitalId = hospitalId,
+                UserId = userId,
+                MobileNumber = mobile
+            }) > 0;
+    }
+
+    public async Task<bool> UserUsernameExistsAsync(
+        Guid hospitalId,
+        Guid userId,
+        string username)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+SELECT COUNT(*)
+FROM Users
+WHERE HospitalId = @HospitalId
+AND Username = @Username
+AND Id <> @UserId
+AND IsDeleted = 0;";
+
+        return await connection.ExecuteScalarAsync<int>(
+            sql,
+            new
+            {
+                HospitalId = hospitalId,
+                UserId = userId,
+                Username = username
+            }) > 0;
+    }
+
+    public async Task UpdateHospitalAdminUserAsync(
+        Guid hospitalId,
+        Guid userId,
+        string username,
+        string email,
+        string mobile)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+UPDATE Users
+SET
+    Username = @Username,
+    Email = @Email,
+    MobileNumber = @MobileNumber,
+    UpdatedAt = @UpdatedAt
+WHERE Id = @UserId
+AND HospitalId = @HospitalId
+AND IsDeleted = 0;";
+
+        await connection.ExecuteAsync(
+            sql,
+            new
+            {
+                HospitalId = hospitalId,
+                UserId = userId,
+                Username = username,
+                Email = email,
+                MobileNumber = mobile,
+                UpdatedAt = DateTime.UtcNow
+            });
+    }
 }

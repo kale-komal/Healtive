@@ -8,13 +8,16 @@ namespace Healtive.Infrastructure.Services.Hospitals;
 public class HospitalService : IHospitalService
 {
     private readonly IHospitalRepository _hospitalRepository;
+    private readonly ICurrentUserService _currentUser;
     private readonly IPasswordHasher _passwordHasher;
 
     public HospitalService(
-    IHospitalRepository hospitalRepository,
-    IPasswordHasher passwordHasher)
+        IHospitalRepository hospitalRepository,
+        ICurrentUserService currentUser,
+        IPasswordHasher passwordHasher)
     {
         _hospitalRepository = hospitalRepository;
+        _currentUser = currentUser;
         _passwordHasher = passwordHasher;
     }
 
@@ -224,41 +227,166 @@ public class HospitalService : IHospitalService
                 "Hospital not found.");
         }
 
-        var response = new HospitalResponse
-{
-    HospitalId = hospital.Id,
-
-    Name = hospital.Name,
-    Code = hospital.Code,
-
-    LicenseNumber = hospital.LicenseNumber,
-    GSTNumber = hospital.GSTNumber,
-
-    HospitalType = hospital.HospitalType,
-
-    Email = hospital.Email,
-    PhoneNumber = hospital.PhoneNumber,
-    Website = hospital.Website,
-
-    Address = hospital.Address,
-    City = hospital.City,
-    State = hospital.State,
-    Country = hospital.Country,
-    PostalCode = hospital.PostalCode,
-
-    TimeZone = hospital.TimeZone,
-    Currency = hospital.Currency,
-
-    IsActive = hospital.IsActive,
-
-    AdminUsername = string.Empty,
-    TemporaryPassword = string.Empty,
-    PlanName = string.Empty
-};
+        var response = ToHospitalResponse(hospital);
 
         return ApiResponse<HospitalResponse>.SuccessResponse(
             response,
             "Hospital fetched successfully.");
+    }
+
+    public async Task<ApiResponse<HospitalResponse>> GetCurrentAsync()
+    {
+        var hospitalId = _currentUser.HospitalId;
+
+        if (hospitalId == Guid.Empty)
+        {
+            return ApiResponse<HospitalResponse>.FailureResponse(
+                "Hospital context not found.");
+        }
+
+        var hospital =
+            await _hospitalRepository.GetByIdAsync(hospitalId);
+
+        if (hospital == null)
+        {
+            return ApiResponse<HospitalResponse>.FailureResponse(
+                "Hospital not found.");
+        }
+
+        var response = ToHospitalResponse(hospital);
+
+        return ApiResponse<HospitalResponse>.SuccessResponse(
+            response,
+            "Hospital fetched successfully.");
+    }
+
+    public async Task<ApiResponse<string>> UpdateCurrentAsync(
+        UpdateHospitalRequest request)
+    {
+        var hospitalId = _currentUser.HospitalId;
+
+        if (hospitalId == Guid.Empty)
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Hospital context not found.");
+        }
+
+        var hospital =
+            await _hospitalRepository.GetByIdAsync(hospitalId);
+
+        if (hospital == null)
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Hospital not found.");
+        }
+
+        if (await _hospitalRepository.ExistsByEmailAsync(
+                hospitalId,
+                request.Email))
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Email already exists.");
+        }
+
+        if (await _hospitalRepository.ExistsByMobileAsync(
+                hospitalId,
+                request.PhoneNumber))
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Phone number already exists.");
+        }
+
+        // Keep the HospitalAdmin login/contact record in sync with the
+        // hospital contact information. The admin user is resolved from
+        // the current hospital only; the request cannot target it.
+        var adminUser =
+            await _hospitalRepository.GetHospitalAdminUserAsync(
+                hospitalId);
+
+        if (adminUser != null)
+        {
+            var emailChanged =
+                !string.Equals(
+                    adminUser.Email,
+                    request.Email,
+                    StringComparison.OrdinalIgnoreCase);
+
+            var mobileChanged =
+                adminUser.MobileNumber != request.PhoneNumber;
+
+            if (adminUser.Username == adminUser.MobileNumber)
+            {
+                // Onboarding uses the hospital phone number as the admin
+                // username, so keep the login identifier in sync too.
+                if (mobileChanged &&
+                    await _hospitalRepository.UserUsernameExistsAsync(
+                        hospitalId,
+                        adminUser.Id,
+                        request.PhoneNumber))
+                {
+                    return ApiResponse<string>.FailureResponse(
+                        "Phone number is already used as a username.");
+                }
+
+                adminUser.Username = request.PhoneNumber;
+            }
+
+            if (emailChanged &&
+                await _hospitalRepository.UserEmailExistsAsync(
+                    hospitalId,
+                    adminUser.Id,
+                    request.Email))
+            {
+                return ApiResponse<string>.FailureResponse(
+                    "Email is already used by another user.");
+            }
+
+            if (mobileChanged &&
+                await _hospitalRepository.UserMobileExistsAsync(
+                    hospitalId,
+                    adminUser.Id,
+                    request.PhoneNumber))
+            {
+                return ApiResponse<string>.FailureResponse(
+                    "Phone number is already used by another user.");
+            }
+
+            adminUser.Email = request.Email;
+            adminUser.MobileNumber = request.PhoneNumber;
+            adminUser.UpdatedAt = DateTime.UtcNow;
+        }
+
+        hospital.Name = request.Name;
+        hospital.LicenseNumber = request.LicenseNumber;
+        hospital.GSTNumber = request.GSTNumber;
+        hospital.HospitalType = request.HospitalType;
+        hospital.Email = request.Email;
+        hospital.PhoneNumber = request.PhoneNumber;
+        hospital.Website = request.Website;
+        hospital.Address = request.Address;
+        hospital.City = request.City;
+        hospital.State = request.State;
+        hospital.Country = request.Country;
+        hospital.PostalCode = request.PostalCode;
+        hospital.TimeZone = request.TimeZone;
+        hospital.Currency = request.Currency;
+        hospital.UpdatedAt = DateTime.UtcNow;
+
+        await _hospitalRepository.UpdateAsync(hospital);
+
+        if (adminUser != null)
+        {
+            await _hospitalRepository.UpdateHospitalAdminUserAsync(
+                hospitalId,
+                adminUser.Id,
+                adminUser.Username,
+                adminUser.Email,
+                adminUser.MobileNumber);
+        }
+
+        return ApiResponse<string>.SuccessResponse(
+            "Hospital updated successfully.",
+            "Success");
     }
 
     public async Task<ApiResponse<string>> UpdateAsync(
@@ -349,5 +477,34 @@ public class HospitalService : IHospitalService
         return ApiResponse<string>.SuccessResponse(
             "Hospital deactivated successfully.",
             "Success");
+    }
+
+    private static HospitalResponse ToHospitalResponse(
+        Hospital hospital)
+    {
+        return new HospitalResponse
+        {
+            HospitalId = hospital.Id,
+            Name = hospital.Name,
+            Code = hospital.Code,
+            LicenseNumber = hospital.LicenseNumber,
+            GSTNumber = hospital.GSTNumber,
+            HospitalType = hospital.HospitalType,
+            Email = hospital.Email,
+            PhoneNumber = hospital.PhoneNumber,
+            Website = hospital.Website,
+            Address = hospital.Address,
+            City = hospital.City,
+            State = hospital.State,
+            Country = hospital.Country,
+            PostalCode = hospital.PostalCode,
+            TimeZone = hospital.TimeZone,
+            Currency = hospital.Currency,
+            IsActive = hospital.IsActive,
+            CreatedAt = hospital.CreatedAt,
+            AdminUsername = string.Empty,
+            TemporaryPassword = string.Empty,
+            PlanName = string.Empty
+        };
     }
 }

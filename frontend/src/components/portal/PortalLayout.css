@@ -1,0 +1,260 @@
+.portal-layout{
+    display:flex;
+    min-height:100vh;
+    background:#f6f8fb;
+}
+
+.portal-main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+
+    margin-left: 270px;
+}
+
+.portal-content{
+    flex:1;
+    padding:30px;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.portal-sidebar{
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 270px;
+    height: 100vh;
+
+    background: #ffffff;
+    border-right: 1px solid #edf0f4;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 24px;
+
+    overflow-y: auto;
+
+    z-index: 1000;
+}
+
+.portal-sidebar-logo{
+    margin-bottom:40px;
+}
+
+.portal-sidebar-logo h3{
+    font-size:26px;
+    font-weight:700;
+    color:#2D7EF9;
+    margin-bottom:2px;
+}
+
+.portal-sidebar-logo span{
+    color:#6b7280;
+    font-size:14px;
+}
+
+.portal-sidebar-menu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.portal-sidebar-link{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+    border-radius:12px;
+    color:#5b6473;
+    transition:.25s;
+    font-weight:500;
+}
+
+.portal-sidebar-link:hover{
+    background:#eef5ff;
+    color:#2D7EF9;
+}
+
+.portal-sidebar-link.active{
+    background:#2D7EF9;
+    color:#fff;
+}
+
+.portal-sidebar-link svg{
+    flex-shrink:0;
+}
+
+.portal-sidebar-link.disabled{
+    color:#b6bdc9;
+    cursor:not-allowed;
+    background:transparent;
+}
+
+.portal-sidebar-link.disabled:hover{
+    background:transparent;
+    color:#b6bdc9;
+}
+
+.portal-sidebar-link-text{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.portal-sidebar-link-text small{
+    font-size:11px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    background:#eef1f6;
+    color:#98a1af;
+    padding:2px 8px;
+    border-radius:999px;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.portal-header{
+    height:75px;
+    background:#fff;
+    border-bottom:1px solid #edf0f4;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 30px;
+}
+
+.portal-header-search{
+    width:320px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#f6f8fb;
+    border-radius:12px;
+    padding:12px 16px;
+}
+
+.portal-header-search input{
+    width:100%;
+    border:none;
+    background:none;
+    outline:none;
+    font-size:15px;
+}
+
+.portal-header-right{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.portal-notification-btn{
+    width:44px;
+    height:44px;
+    border:none;
+    background:#f6f8fb;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.portal-profile{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.portal-profile-avatar{
+    width:42px;
+    height:42px;
+    background:#2D7EF9;
+    color:#fff;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:600;
+}
+
+.portal-profile-info h5{
+    font-size:15px;
+    margin:0;
+}
+
+.portal-profile-info span{
+    font-size:13px;
+    color:#6b7280;
+}
+
+.portal-logout-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:none;
+    background:#ef4444;
+    color:#fff;
+    padding:10px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.portal-logout-btn:hover{
+    background:#dc2626;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1199.98px){
+
+    .portal-content{
+        padding:24px;
+    }
+
+}
+
+@media (max-width: 767.98px){
+
+    .portal-sidebar{
+        transform:translateX(-100%);
+        transition:transform .3s ease;
+    }
+
+    .portal-main{
+        margin-left:0;
+    }
+
+    .portal-content{
+        padding:18px;
+    }
+
+    .portal-header{
+        padding:0 18px;
+    }
+
+    .portal-header-search{
+        display:none;
+    }
+
+    .portal-profile-info{
+        display:none;
+    }
+
+    .portal-logout-btn{
+        padding:10px 14px;
+    }
+
+    .portal-sidebar{
+        width:270px;
+    }
+
+}

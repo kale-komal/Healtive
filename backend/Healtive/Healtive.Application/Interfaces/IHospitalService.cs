@@ -12,6 +12,11 @@ public interface IHospitalService
         HospitalFilterRequest request);
     Task<ApiResponse<HospitalResponse>> GetByIdAsync(Guid id);
 
+    Task<ApiResponse<HospitalResponse>> GetCurrentAsync();
+
+    Task<ApiResponse<string>> UpdateCurrentAsync(
+        UpdateHospitalRequest request);
+
     Task<ApiResponse<string>> UpdateAsync(
         Guid id,
         UpdateHospitalRequest request);

@@ -1,0 +1,53 @@
+.status-badge{
+    display:inline-flex;
+    align-items:center;
+    padding:5px 12px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:500;
+}
+
+.status-badge-scheduled{
+    background:#EFF6FF;
+    color:#2563EB;
+}
+
+.status-badge-confirmed{
+    background:#E7F6FF;
+    color:#0284C7;
+}
+
+.status-badge-waiting{
+    background:#FEF3C7;
+    color:#D97706;
+}
+
+.status-badge-checked-in{
+    background:#DCFCE7;
+    color:#16A34A;
+}
+
+.status-badge-called{
+    background:#CCFBF1;
+    color:#0D9488;
+}
+
+.status-badge-completed{
+    background:#E2F4F0;
+    color:#0F766E;
+}
+
+.status-badge-cancelled{
+    background:#FEE2E2;
+    color:#DC2626;
+}
+
+.status-badge-no-show{
+    background:#F1F5F9;
+    color:#64748B;
+}
+
+.status-badge-default{
+    background:#F1F5F9;
+    color:#475569;
+}

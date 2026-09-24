@@ -73,7 +73,7 @@ public class StaffService : IStaffService
         }
 
         var temporaryPassword =
-            "Staff@" + Random.Shared.Next(1000, 9999);
+            "Staff@123";
 
         var user = new User
         {

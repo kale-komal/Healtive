@@ -45,6 +45,22 @@ public interface IAppointmentRepository
         Guid appointmentId,
         Guid appointmentStatusId);
 
+    Task<AppointmentCheckInResult> CheckInAsync(
+        Guid hospitalId,
+        Guid appointmentId,
+        Guid? doctorId,
+        Guid changedByUserId,
+        string remark);
+
+    Task<IEnumerable<AppointmentQueueItemResponse>> GetQueueAsync(
+        Guid hospitalId,
+        Guid doctorId,
+        DateOnly appointmentDate);
+
+    Task<string?> GetUserNameAsync(
+        Guid hospitalId,
+        Guid userId);
+
     Task AddHistoryAsync(
         AppointmentHistory history);
 

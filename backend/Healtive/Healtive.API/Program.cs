@@ -142,6 +142,12 @@ builder.Services.AddScoped<IMedicalHistoryRepository, MedicalHistoryRepository>(
 builder.Services.AddScoped<IMedicalHistoryService, MedicalHistoryService>();
 builder.Services.AddScoped<IDiagnosisRepository, DiagnosisRepository>();
 builder.Services.AddScoped<IDiagnosisService, DiagnosisService>();
+builder.Services.AddScoped<IDoctorPrescriptionRepository, DoctorPrescriptionRepository>();
+builder.Services.AddScoped<IDoctorPrescriptionService, DoctorPrescriptionService>();
+builder.Services.AddScoped<IDoctorLabRepository, DoctorLabRepository>();
+builder.Services.AddScoped<IDoctorLabService, DoctorLabService>();
+builder.Services.AddScoped<IDoctorFollowUpRepository, DoctorFollowUpRepository>();
+builder.Services.AddScoped<IDoctorFollowUpService, DoctorFollowUpService>();
 
 var app = builder.Build();
 

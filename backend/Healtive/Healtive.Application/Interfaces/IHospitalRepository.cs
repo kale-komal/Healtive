@@ -38,4 +38,28 @@ public interface IHospitalRepository
 
     Task DeactivateAsync(Guid id);
     Task<string?> GetLastHospitalCodeAsync();
+
+    Task<User?> GetHospitalAdminUserAsync(Guid hospitalId);
+
+    Task<bool> UserEmailExistsAsync(
+        Guid hospitalId,
+        Guid userId,
+        string email);
+
+    Task<bool> UserMobileExistsAsync(
+        Guid hospitalId,
+        Guid userId,
+        string mobile);
+
+    Task<bool> UserUsernameExistsAsync(
+        Guid hospitalId,
+        Guid userId,
+        string username);
+
+    Task UpdateHospitalAdminUserAsync(
+        Guid hospitalId,
+        Guid userId,
+        string username,
+        string email,
+        string mobile);
 }
