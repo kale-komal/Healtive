@@ -123,7 +123,8 @@ AND IsDeleted = 0;";
      Doctor doctor,
      User user,
      Role role,
-     UserRole userRole)
+     UserRole userRole,
+     Guid? departmentId)
     {
         using var connection = _db.CreateConnection();
 
@@ -142,6 +143,7 @@ INSERT INTO Users
 (
     Id,
     HospitalId,
+    BranchId,
     EmployeeCode,
     Username,
     FirstName,
@@ -159,6 +161,7 @@ VALUES
 (
     @Id,
     @HospitalId,
+    @BranchId,
     @EmployeeCode,
     @Username,
     @FirstName,
@@ -258,7 +261,40 @@ VALUES
 
 
             // =====================================================
-            // 4. COMMIT
+            // 4. ASSIGN DEPARTMENT (IF PROVIDED)
+            // =====================================================
+
+            if (departmentId.HasValue &&
+                departmentId.Value != Guid.Empty)
+            {
+                const string mappingSql = @"
+INSERT INTO DoctorDepartments
+(
+    DoctorId,
+    DepartmentId,
+    CreatedAt
+)
+VALUES
+(
+    @DoctorId,
+    @DepartmentId,
+    @CreatedAt
+);";
+
+                await connection.ExecuteAsync(
+                    mappingSql,
+                    new
+                    {
+                        DoctorId = doctor.Id,
+                        DepartmentId = departmentId.Value,
+                        CreatedAt = DateTime.UtcNow
+                    },
+                    transaction);
+            }
+
+
+            // =====================================================
+            // 5. COMMIT
             // =====================================================
 
             transaction.Commit();
@@ -272,7 +308,8 @@ VALUES
 
     public async Task UpdateAsync(
         Doctor doctor,
-        User user)
+        User user,
+        Guid? departmentId)
     {
         using var connection = _db.CreateConnection();
 
@@ -310,7 +347,8 @@ AND IsDeleted = 0;";
 UPDATE Users
 SET
     Email = @Email,
-    MobileNumber = @MobileNumber
+    MobileNumber = @MobileNumber,
+    BranchId = @BranchId
 WHERE Id = @Id
 AND HospitalId = @HospitalId
 AND IsDeleted = 0;";
@@ -319,6 +357,50 @@ AND IsDeleted = 0;";
                 userSql,
                 user,
                 transaction);
+
+            // Replace the department mapping when the admin changes it.
+            // A null departmentId keeps the existing mapping untouched.
+            if (departmentId.HasValue)
+            {
+                const string removeMappingSql = @"
+DELETE FROM DoctorDepartments
+WHERE DoctorId = @DoctorId;";
+
+                await connection.ExecuteAsync(
+                    removeMappingSql,
+                    new
+                    {
+                        DoctorId = doctor.Id
+                    },
+                    transaction);
+
+                if (departmentId.Value != Guid.Empty)
+                {
+                    const string addMappingSql = @"
+INSERT INTO DoctorDepartments
+(
+    DoctorId,
+    DepartmentId,
+    CreatedAt
+)
+VALUES
+(
+    @DoctorId,
+    @DepartmentId,
+    @CreatedAt
+);";
+
+                    await connection.ExecuteAsync(
+                        addMappingSql,
+                        new
+                        {
+                            DoctorId = doctor.Id,
+                            DepartmentId = departmentId.Value,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        transaction);
+                }
+            }
 
             transaction.Commit();
         }
@@ -425,8 +507,36 @@ SELECT
     d.Gender,
     d.IsAvailable,
     d.IsActive,
-    d.CreatedAt
+    d.CreatedAt,
+    u.MobileNumber,
+    u.Email,
+    b.Id AS BranchId,
+    b.Name AS BranchName,
+    dept.Id AS DepartmentId,
+    dept.Name AS DepartmentName
 FROM Doctors d
+LEFT JOIN Users u
+    ON u.Id = d.UserId
+    AND u.IsDeleted = 0
+LEFT JOIN Branches b
+    ON b.Id = u.BranchId
+    AND b.HospitalId = @HospitalId
+    AND b.IsDeleted = 0
+LEFT JOIN
+(
+    SELECT
+        dd.DoctorId,
+        MIN(dd.DepartmentId) AS DepartmentId
+    FROM DoctorDepartments dd
+    INNER JOIN Departments dm
+        ON dm.Id = dd.DepartmentId
+        AND dm.HospitalId = @HospitalId
+        AND dm.IsDeleted = 0
+    GROUP BY dd.DoctorId
+) dept_map
+    ON dept_map.DoctorId = d.Id
+LEFT JOIN Departments dept
+    ON dept.Id = dept_map.DepartmentId
 {conditions}
 ORDER BY d.CreatedAt DESC
 LIMIT @PageSize OFFSET @Offset;";
@@ -469,28 +579,56 @@ LIMIT @PageSize OFFSET @Offset;";
 
         const string sql = @"
 SELECT
-    Id AS DoctorId,
-    HospitalId,
-    UserId,
-    FullName,
-    DoctorCode,
-    RegistrationNumber,
-    Qualification,
-    ExperienceYears,
-    ConsultationFee,
-    Gender,
-    DateOfBirth,
-    JoiningDate,
-    Bio,
-    ProfileImageUrl,
-    IsAvailable,
-    IsActive,
-    CreatedAt,
-    UpdatedAt
-FROM Doctors
-WHERE Id = @DoctorId
-AND HospitalId = @HospitalId
-AND IsDeleted = 0;";
+    d.Id AS DoctorId,
+    d.HospitalId,
+    d.UserId,
+    d.FullName,
+    d.DoctorCode,
+    d.RegistrationNumber,
+    d.Qualification,
+    d.ExperienceYears,
+    d.ConsultationFee,
+    d.Gender,
+    d.DateOfBirth,
+    d.JoiningDate,
+    d.Bio,
+    d.ProfileImageUrl,
+    d.IsAvailable,
+    d.IsActive,
+    d.CreatedAt,
+    d.UpdatedAt,
+    u.MobileNumber,
+    u.Email,
+    b.Id AS BranchId,
+    b.Name AS BranchName,
+    dept.Id AS DepartmentId,
+    dept.Name AS DepartmentName
+FROM Doctors d
+LEFT JOIN Users u
+    ON u.Id = d.UserId
+    AND u.IsDeleted = 0
+LEFT JOIN Branches b
+    ON b.Id = u.BranchId
+    AND b.HospitalId = @HospitalId
+    AND b.IsDeleted = 0
+LEFT JOIN
+(
+    SELECT
+        dd.DoctorId,
+        MIN(dd.DepartmentId) AS DepartmentId
+    FROM DoctorDepartments dd
+    INNER JOIN Departments dm
+        ON dm.Id = dd.DepartmentId
+        AND dm.HospitalId = @HospitalId
+        AND dm.IsDeleted = 0
+    GROUP BY dd.DoctorId
+) dept_map
+    ON dept_map.DoctorId = d.Id
+LEFT JOIN Departments dept
+    ON dept.Id = dept_map.DepartmentId
+WHERE d.Id = @DoctorId
+AND d.HospitalId = @HospitalId
+AND d.IsDeleted = 0;";
 
         return await connection.QueryFirstOrDefaultAsync<DoctorResponse>(
             sql,

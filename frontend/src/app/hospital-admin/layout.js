@@ -30,25 +30,21 @@ const hospitalAdminMenu = [
         title: "Branches",
         href: "/hospital-admin/branches",
         icon: Building2,
-        disabled: true,
     },
     {
         title: "Departments",
         href: "/hospital-admin/departments",
         icon: Layers,
-        disabled: true,
     },
     {
         title: "Doctors",
         href: "/hospital-admin/doctors",
         icon: Stethoscope,
-        disabled: true,
     },
     {
         title: "Staff",
         href: "/hospital-admin/staff",
         icon: Briefcase,
-        disabled: true,
     },
     {
         title: "Roles",

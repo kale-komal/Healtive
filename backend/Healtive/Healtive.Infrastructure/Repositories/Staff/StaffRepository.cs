@@ -204,27 +204,53 @@ AND IsDeleted = 0;";
             }) > 0;
     }
 
-    public async Task<bool> RoleExistsAsync(
+    public async Task<string?> GetAssignableRoleNameAsync(
         Guid hospitalId,
         Guid roleId)
     {
         using var connection = _db.CreateConnection();
 
         const string sql = @"
-SELECT COUNT(*)
+SELECT Name
 FROM Roles
 WHERE Id = @RoleId
 AND HospitalId = @HospitalId
 AND IsActive = 1
-AND IsDeleted = 0;";
+AND IsDeleted = 0
+AND LOWER(Name) NOT IN ('hospitaladmin', 'superadmin', 'doctor')
+LIMIT 1;";
 
-        return await connection.ExecuteScalarAsync<int>(
+        return await connection.QueryFirstOrDefaultAsync<string>(
             sql,
             new
             {
                 HospitalId = hospitalId,
                 RoleId = roleId
-            }) > 0;
+            });
+    }
+
+    public async Task<IEnumerable<string>> GetUserRoleNamesAsync(
+        Guid hospitalId,
+        Guid userId)
+    {
+        using var connection = _db.CreateConnection();
+
+        const string sql = @"
+SELECT r.Name
+FROM UserRoles ur
+INNER JOIN Roles r ON r.Id = ur.RoleId
+INNER JOIN Users u ON u.Id = ur.UserId
+WHERE ur.UserId = @UserId
+AND u.HospitalId = @HospitalId
+AND r.IsDeleted = 0;";
+
+        return await connection.QueryAsync<string>(
+            sql,
+            new
+            {
+                HospitalId = hospitalId,
+                UserId = userId
+            });
     }
 
     public async Task CreateAsync(User user)
@@ -316,19 +342,55 @@ AND IsDeleted = 0;";
         Guid roleId)
     {
         using var connection = _db.CreateConnection();
+        connection.Open();
 
-        const string sql = @"
-UPDATE UserRoles
-SET RoleId = @RoleId
-WHERE UserId = @UserId;";
+        using var transaction = connection.BeginTransaction();
+
+        // Replace the user's existing staff-role mappings with the newly
+        // selected primary staff role. Doctor, HospitalAdmin and
+        // SuperAdmin mappings are never removed here.
+        const string deleteSql = @"
+DELETE ur
+FROM UserRoles ur
+INNER JOIN Roles r ON r.Id = ur.RoleId
+WHERE ur.UserId = @UserId
+AND r.IsDeleted = 0
+AND LOWER(r.Name) NOT IN ('doctor', 'hospitaladmin', 'superadmin');";
+
+        const string insertSql = @"
+INSERT INTO UserRoles
+(
+    UserId,
+    RoleId,
+    AssignedAt
+)
+SELECT @UserId, @RoleId, @AssignedAt
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM UserRoles
+    WHERE UserId = @UserId
+    AND RoleId = @RoleId
+);";
 
         await connection.ExecuteAsync(
-            sql,
+            deleteSql,
+            new
+            {
+                UserId = userId
+            },
+            transaction);
+
+        await connection.ExecuteAsync(
+            insertSql,
             new
             {
                 UserId = userId,
-                RoleId = roleId
-            });
+                RoleId = roleId,
+                AssignedAt = DateTime.UtcNow
+            },
+            transaction);
+
+        transaction.Commit();
     }
 
     public async Task<PagedResponse<StaffListResponse>> GetAllAsync(
@@ -339,7 +401,15 @@ WHERE UserId = @UserId;";
 
         var conditions = @"
 WHERE u.HospitalId = @HospitalId
-AND u.IsDeleted = 0";
+AND u.IsDeleted = 0
+AND u.Id NOT IN (
+    SELECT ur2.UserId
+    FROM UserRoles ur2
+    INNER JOIN Roles r2
+        ON r2.Id = ur2.RoleId
+    WHERE r2.IsDeleted = 0
+    AND LOWER(r2.Name) IN ('doctor', 'hospitaladmin', 'superadmin')
+)";
 
         if (!string.IsNullOrWhiteSpace(request.Search))
         {

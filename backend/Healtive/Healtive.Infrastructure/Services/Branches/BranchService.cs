@@ -2,6 +2,7 @@
 using Healtive.Application.DTOs.Common;
 using Healtive.Application.Interfaces;
 using Healtive.Core.Entities;
+using MySqlConnector;
 
 namespace Healtive.Infrastructure.Services.Branches;
 
@@ -29,13 +30,16 @@ public class BranchService : IBranchService
                 "Hospital information not found.");
         }
 
-        // Check duplicate branch code
-        if (await _branchRepository.ExistsByCodeAsync(
-            hospitalId,
-            request.Code))
+        // When the client does not send a code, derive one from the
+        // branch name (KOLHAPUR MAIN -> KOLHAPUR-MAIN).
+        var baseCode = string.IsNullOrWhiteSpace(request.Code)
+            ? GenerateBranchCode(request.Name)
+            : request.Code.Trim().ToUpperInvariant();
+
+        if (string.IsNullOrWhiteSpace(baseCode))
         {
             return ApiResponse<string>.FailureResponse(
-                "Branch code already exists.");
+                "Branch code is required.");
         }
 
         // If this branch is going to be Head Office,
@@ -45,38 +49,59 @@ public class BranchService : IBranchService
             await _branchRepository.ClearHeadOfficeAsync(hospitalId);
         }
 
-        var branch = new Branch
+        // The (HospitalId, Code) unique constraint is enforced in the
+        // database, so conflicting codes fail atomically. On a duplicate
+        // key we retry with a numeric suffix (KOLHAPUR, KOLHAPUR-2, ...).
+        for (var attempt = 0; attempt < 100; attempt++)
         {
-            Id = Guid.NewGuid(),
+            var code = attempt == 0
+                ? baseCode
+                : $"{baseCode}-{attempt + 1}";
 
-            HospitalId = hospitalId,
+            var branch = new Branch
+            {
+                Id = Guid.NewGuid(),
 
-            Name = request.Name,
-            Code = request.Code,
+                HospitalId = hospitalId,
 
-            Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
+                Name = request.Name,
+                Code = code,
 
-            Address = request.Address,
-            City = request.City,
-            State = request.State,
-            Country = request.Country,
-            PostalCode = request.PostalCode,
+                Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
 
-            IsHeadOffice = request.IsHeadOffice,
+                Address = request.Address,
+                City = request.City,
+                State = request.State,
+                Country = request.Country,
+                PostalCode = request.PostalCode,
 
-            IsActive = true,
+                IsHeadOffice = request.IsHeadOffice,
 
-            CreatedAt = DateTime.UtcNow,
+                IsActive = true,
 
-            IsDeleted = false
-        };
+                CreatedAt = DateTime.UtcNow,
 
-        await _branchRepository.CreateAsync(branch);
+                IsDeleted = false
+            };
 
-        return ApiResponse<string>.SuccessResponse(
-            "Branch created successfully.",
-            "Success");
+            try
+            {
+                await _branchRepository.CreateAsync(branch);
+
+                return ApiResponse<string>.SuccessResponse(
+                    "Branch created successfully.",
+                    "Success");
+            }
+            catch (Exception ex) when (IsDuplicateKeyException(ex))
+            {
+                // Collision with an existing (or soft-deleted) code;
+                // try the next suffix.
+            }
+        }
+
+        return ApiResponse<string>.FailureResponse(
+            "Branch code already exists.");
     }
 
     public async Task<ApiResponse<PagedResponse<BranchListResponse>>> GetAllAsync(
@@ -223,7 +248,15 @@ public class BranchService : IBranchService
 
         branch.UpdatedAt = DateTime.UtcNow;
 
-        await _branchRepository.UpdateAsync(branch);
+        try
+        {
+            await _branchRepository.UpdateAsync(branch);
+        }
+        catch (Exception ex) when (IsDuplicateKeyException(ex))
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Branch code already exists.");
+        }
 
         return ApiResponse<string>.SuccessResponse(
             "Branch updated successfully.",
@@ -330,5 +363,57 @@ public class BranchService : IBranchService
         return ApiResponse<string>.SuccessResponse(
             "Branch deactivated successfully.",
             "Success");
+    }
+
+    private static readonly HashSet<string> BranchCodeStopWords =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "the", "a", "an", "branch", "branches", "hospital"
+        };
+
+    private static string GenerateBranchCode(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return string.Empty;
+
+        var cleaned = new string(
+            (name ?? string.Empty)
+                .ToUpperInvariant()
+                .Select(c => char.IsLetterOrDigit(c) ? c : ' ')
+                .ToArray());
+
+        var tokens = cleaned
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .ToList();
+
+        if (tokens.Count == 0)
+            return string.Empty;
+
+        var words = tokens
+            .Where(t => !BranchCodeStopWords.Contains(t))
+            .ToList();
+
+        if (words.Count == 0)
+            words = tokens;
+
+        var code = string.Join("-", words);
+
+        if (code.Length > 40)
+            code = code[..40];
+
+        return code.TrimEnd('-');
+    }
+
+    private static bool IsDuplicateKeyException(Exception ex)
+    {
+        for (var current = ex;
+            current != null;
+            current = current.InnerException)
+        {
+            if (current is MySqlException { Number: 1062 })
+                return true;
+        }
+
+        return false;
     }
 }

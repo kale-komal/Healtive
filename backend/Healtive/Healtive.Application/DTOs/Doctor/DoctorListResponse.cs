@@ -20,6 +20,18 @@ public class DoctorListResponse
 
     public string Gender { get; set; } = string.Empty;
 
+    public string? MobileNumber { get; set; }
+
+    public string? Email { get; set; }
+
+    public Guid? BranchId { get; set; }
+
+    public string? BranchName { get; set; }
+
+    public Guid? DepartmentId { get; set; }
+
+    public string? DepartmentName { get; set; }
+
     public bool IsAvailable { get; set; }
 
     public bool IsActive { get; set; }

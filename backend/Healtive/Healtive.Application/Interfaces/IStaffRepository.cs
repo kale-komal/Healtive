@@ -42,9 +42,13 @@ public interface IStaffRepository
         Guid userId,
         string mobileNumber);
 
-    Task<bool> RoleExistsAsync(
+    Task<string?> GetAssignableRoleNameAsync(
         Guid hospitalId,
         Guid roleId);
+
+    Task<IEnumerable<string>> GetUserRoleNamesAsync(
+        Guid hospitalId,
+        Guid userId);
 
     Task CreateAsync(User user);
 

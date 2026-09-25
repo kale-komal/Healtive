@@ -2,6 +2,7 @@
 using Healtive.Application.DTOs.Department;
 using Healtive.Application.Interfaces;
 using Healtive.Core.Entities;
+using MySqlConnector;
 
 namespace Healtive.Infrastructure.Services.Departments;
 
@@ -72,7 +73,15 @@ public class DepartmentService : IDepartmentService
             IsDeleted = false
         };
 
-        await _departmentRepository.CreateAsync(department);
+        try
+        {
+            await _departmentRepository.CreateAsync(department);
+        }
+        catch (Exception ex) when (IsDuplicateKeyException(ex))
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Department already exists.");
+        }
 
         return ApiResponse<string>.SuccessResponse(
             "Department created successfully.",
@@ -215,7 +224,15 @@ public class DepartmentService : IDepartmentService
 
         department.UpdatedAt = DateTime.UtcNow;
 
-        await _departmentRepository.UpdateAsync(department);
+        try
+        {
+            await _departmentRepository.UpdateAsync(department);
+        }
+        catch (Exception ex) when (IsDuplicateKeyException(ex))
+        {
+            return ApiResponse<string>.FailureResponse(
+                "Department code already exists.");
+        }
 
         return ApiResponse<string>.SuccessResponse(
             "Department updated successfully.",
@@ -322,5 +339,18 @@ public class DepartmentService : IDepartmentService
         return ApiResponse<string>.SuccessResponse(
             "Department deactivated successfully.",
             "Success");
+    }
+
+    private static bool IsDuplicateKeyException(Exception ex)
+    {
+        for (var current = ex;
+            current != null;
+            current = current.InnerException)
+        {
+            if (current is MySqlException { Number: 1062 })
+                return true;
+        }
+
+        return false;
     }
 }

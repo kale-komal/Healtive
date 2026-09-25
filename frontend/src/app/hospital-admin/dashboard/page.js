@@ -95,8 +95,8 @@ const fetchCount = async (loader, params) => {
 
         const paged = normalized.data;
 
-        return typeof paged?.TotalCount === "number"
-            ? paged.TotalCount
+        return typeof paged?.totalCount === "number"
+            ? paged.totalCount
             : null;
 
     }
@@ -196,19 +196,19 @@ export default function HospitalAdminDashboardPage() {
 
                 }
 
-                const items = Array.isArray(paged.Items) ? paged.Items : [];
+                const items = Array.isArray(paged.items) ? paged.items : [];
 
                 setAppointments(items);
 
                 setTotalCount(
-                    typeof paged.TotalCount === "number"
-                        ? paged.TotalCount
+                    typeof paged.totalCount === "number"
+                        ? paged.totalCount
                         : items.length
                 );
 
                 setTotalPages(
-                    typeof paged.TotalPages === "number"
-                        ? paged.TotalPages
+                    typeof paged.totalPages === "number"
+                        ? paged.totalPages
                         : 1
                 );
 
@@ -261,14 +261,14 @@ export default function HospitalAdminDashboardPage() {
 
     const checkedInCount = appointments.filter(
         (appointment) =>
-            String(appointment.AppointmentStatusName || "")
+            String(appointment.appointmentStatusName || "")
                 .toUpperCase()
                 .replace(/[^A-Z0-9]+/g, "_") === "CHECKED_IN"
     ).length;
 
     const inQueueCount = appointments.filter((appointment) => {
 
-        const code = String(appointment.AppointmentStatusName || "")
+        const code = String(appointment.appointmentStatusName || "")
             .toUpperCase()
             .replace(/[^A-Z0-9]+/g, "_");
 
@@ -282,7 +282,7 @@ export default function HospitalAdminDashboardPage() {
 
     const completedCount = appointments.filter(
         (appointment) =>
-            String(appointment.AppointmentStatusName || "")
+            String(appointment.appointmentStatusName || "")
                 .toUpperCase()
                 .replace(/[^A-Z0-9]+/g, "_") === "COMPLETED"
     ).length;
@@ -442,34 +442,34 @@ export default function HospitalAdminDashboardPage() {
                                         {
                                             appointments.map((appointment) => (
 
-                                                <tr key={appointment.Id}>
+                                                <tr key={appointment.id}>
 
                                                     <td className="appointment-number-cell">
-                                                        {appointment.AppointmentNumber}
+                                                        {appointment.appointmentNumber}
                                                     </td>
 
                                                     <td>
-                                                        {formatDate(appointment.AppointmentDate)}
+                                                        {formatDate(appointment.appointmentDate)}
                                                     </td>
 
                                                     <td>
-                                                        {formatTime(appointment.AppointmentTime)}
+                                                        {formatTime(appointment.appointmentTime)}
                                                     </td>
 
                                                     <td>
-                                                        {appointment.ConsultationType || "—"}
+                                                        {appointment.consultationType || "—"}
                                                     </td>
 
                                                     <td>
                                                         <StatusBadge
                                                             status={
-                                                                appointment.AppointmentStatusName
+                                                                appointment.appointmentStatusName
                                                             }
                                                         />
                                                     </td>
 
                                                     <td className="token-cell">
-                                                        {appointment.TokenNumber ?? "—"}
+                                                        {appointment.tokenNumber ?? "—"}
                                                     </td>
 
                                                 </tr>

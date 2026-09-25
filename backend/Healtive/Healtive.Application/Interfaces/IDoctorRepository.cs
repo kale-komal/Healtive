@@ -27,11 +27,13 @@ public interface IDoctorRepository
         Doctor doctor,
         User user,
         Role role,
-        UserRole userRole);
+        UserRole userRole,
+        Guid? departmentId);
 
     Task UpdateAsync(
         Doctor doctor,
-        User user);
+        User user,
+        Guid? departmentId);
 
     Task<PagedResponse<DoctorListResponse>> GetAllAsync(
         Guid hospitalId,
